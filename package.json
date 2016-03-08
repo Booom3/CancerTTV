@@ -1,0 +1,29 @@
+{
+  "name": "cancerttv",
+  "version": "1.0.0",
+  "description": "Makes Twitch just a little bit worse for everyone else.",
+  "main": "Injection.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Booom3/CancerTTV.git"
+  },
+  "keywords": [
+    "Twitch",
+    "cancer"
+  ],
+  "author": "Booom3",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Booom3/CancerTTV/issues"
+  },
+  "homepage": "https://github.com/Booom3/CancerTTV#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-jshint": "^2.0.0",
+    "gulp-zip": "^3.2.0",
+    "jshint": "^2.9.1"
+  }
+}
