@@ -27,6 +27,17 @@ build/Release
 # https://docs.npmjs.com/misc/faq#should-i-check-my-node-modules-folder-into-git
 node_modules
 
+# Ignored project files
+Source/jquery
+Extensions/Firefox Extension/CancerTTV Firefox.xpi
+Extensions/Firefox Extension/Source/CancerTTV.js
+Extensions/Firefox Extension/Source/CancerTTV-Activator.js
+Extensions/Firefox Extension/Source/Injector.js
+Extensions/Chrome Extension/CancerTTV Chrome.zip
+Extensions/Chrome Extension/Source/CancerTTV.js
+Extensions/Chrome Extension/Source/CancerTTV-Activator.js
+Extensions/Chrome Extension/Source/Injector.js
+
 # =========================
 # Operating System Files
 # =========================

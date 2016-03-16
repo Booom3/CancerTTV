@@ -1,19 +1,29 @@
 {
 	"manifest_version": 2,
 	"name": "CancerTTV",
-	"version": "1.0",
-	
+	"version": "1.3.1",
 	"description": "Makes Twitch just a little bit worse for everyone else.",
-	"icons": { "64": "Icon.png" },
+	"icons": {
+		"64": "Icon 64.png",
+		"128": "Icon 128.png"
+	},
 	"author": "Booom3",
 	"content_scripts": [
 		{
-			"matches": ["http://www.twitch.tv/*", "https://www.twitch.tv/*"],
-			"js": ["Injector.js"],
+			"matches": [
+				"http://www.twitch.tv/*",
+				"https://www.twitch.tv/*"
+			],
+			"js": [
+				"jquery-2.2.1.min.js",
+				"jquery.trackpad-scroll-emulator.min.js",
+				"CancerTTV.js",
+				"Injector.js"
+			],
 			"run_at": "document_end"
 		}
 	],
 	"web_accessible_resources": [
-		"CancerTTV.js"
+		"CancerTTV-Activator.js"
 	]
 }

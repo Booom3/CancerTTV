@@ -1,0 +1,10 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+    "editor.insertSpaces": false,
+    "editor.formatOnType": true,
+	"jshint.enable": true,
+	"files.exclude": {
+		"**/.git": true,
+		"**/.DS_Store": true
+	}
+}
