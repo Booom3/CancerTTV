@@ -67,7 +67,7 @@ var main = function() {
 		"border: rgba(100, 100, 100, 0.5) solid 1px; background - color: rgb(37, 24, 61); width: 250px; height: 350px; }\n" +
 		"" +		
 		".help-popup-message-cttv { text-align: center; background-color: rgb(60, 60, 60); box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.15) inset;\n" +
-		"border-bottom: black solid 2px; padding: 8px 6px 10px 6px; color: rgb(211, 211, 211); }\n" +
+		"border-bottom: black solid 2px; padding: 8px 6px 10px 6px; color: rgb(211, 211, 211); display: block; }\n" +
 		".help-popup-message-cttv:last-child { border-bottom: none; }\n" +
 		".help-popup-message-cttv:first-child { box-shadow: none; }\n" +
 		".help-popup-message-cttv:nth-child(2n) { background-color: rgb(40, 40, 40); }\n" +
@@ -631,7 +631,6 @@ var main = function() {
     var currentRetries = 0;
     var rebindChat;
     var chatRebindLoop = function() {
-		console.log("CTTV chatBox: " + chatBox[0]);
         if (!hasEventHandler(chatBox[0], chatBoxOnKeyDown)) {
             chatBox.on('keydown', chatBoxOnKeyDown);
             currentRetries = 0;
@@ -887,7 +886,7 @@ var main = function() {
                 helpText.remove();
                 firstTime = false;
                 window.localStorage.setItem("cttvFirstTime", "false");
-                document.removeEventListener(firstCtrl);
+                document.removeEventListener('keydown', firstCtrl);
             }
         };
         document.addEventListener('keydown', firstCtrl);
