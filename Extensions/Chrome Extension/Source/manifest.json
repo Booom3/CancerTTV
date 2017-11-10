@@ -12,7 +12,9 @@
 		{
 			"matches": [
 				"http://www.twitch.tv/*",
-				"https://www.twitch.tv/*"
+				"https://www.twitch.tv/*",
+				"http://go.twitch.tv/*",
+				"https://go.twitch.tv/*"
 			],
 			"js": [
 				"jquery-2.2.1.min.js",

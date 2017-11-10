@@ -50,20 +50,21 @@ var main = function() {
 
     console.log("CTTV Main called");
 
-    var chatMessageArea = $('.chat-lines');
-    var chatArea = $('.ember-chat .chat-interface');
-    var chatBox = chatArea.find('textarea');
+    var chatMessageArea = $('.chat-list__lines');
+    var chatArea = $('.chat__container');
+    var chatBox = chatArea.find('div textarea');
     var chatSend = $('.send-chat-button');
 
-    var cttvStyleTag = $("<style type='text/css'>\n" +
+    var cttvStyleTag = $(
+        "<style type='text/css'>\n" +
 		".hide-more-messages .more-messages-indicator { display: none; }" +
 		".help-popup-cttv-visible { z-index: 9; left: -45px !important; opacity: 1 !important; pointer-events: auto !important; cursor: pointer;}\n" +
 		".help-popup-cttv { text-align: center; vertical-align: middle; line-height: 22px;\n" +
-		"border-radius: 50%; position: absolute; left: 0px; top: calc(50% - 10px); width: 20px; height: 20px; opacity: 0;\n" +
+		"border-radius: 50%; position: absolute; left: 0px; bottom: 75px; width: 20px; height: 20px; opacity: 0;\n" +
 		"background-color: rgb(100, 65, 165); transition: opacity .3s, left .3s, transform .3s; pointer-events: none; }\n" +
 		".help-popup-cttv:hover { box-shadow: 0px 0px 12px rgb(100, 65, 165); transform: scale(1.2); }\n" +
 		"" +
-		".help-popup-top-cttv { position:absolute; right: 100%; bottom: 50px; float: right; z-index: 3;" +
+		".help-popup-top-cttv { position:absolute; right: 100%; bottom: 50px; float: right; z-index: 3; overflow-y: scroll; overflow-x: hidden;" +
 		"border: rgba(100, 100, 100, 0.5) solid 1px; background - color: rgb(37, 24, 61); width: 250px; height: 350px; }\n" +
 		"" +		
 		".help-popup-message-cttv { text-align: center; background-color: rgb(60, 60, 60); box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.15) inset;\n" +
@@ -76,7 +77,8 @@ var main = function() {
 		".kbd { padding: 0.1em 0.6em; border: 1px solid rgb(204, 204, 204); font-size: 11px; font-family: Arial,Helvetica,sans-serif;" +
 		"background-color: rgb(247, 247, 247); color: rgb(51, 51, 51); box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px rgb(255, 255, 255) inset;" +
 		"border-radius: 3px; display: inline-block; margin: 0 0.1em; text-shadow: 0 1px 0 rgb(255, 255, 255);" +
-		"line-height: 1.5; white-space: nowrap;}</style>").appendTo("head");
+        "line-height: 1.5; white-space: nowrap;}</style>")
+        .appendTo("head");
 
     var helpPopupDiv = function(addString) {
         return "<div class='help-popup-message-cttv' " + addString + ">";
@@ -104,7 +106,7 @@ var main = function() {
         if (helpPopup) helpPopup.css('display', 'none');
 
         var helpAreaTop = $("<div class='tse-scrollable scroll scroll-dark help-popup-top-cttv'>")
-        .appendTo('#right_col');
+        .appendTo('.right-column');
 
         var helpArea = $("<div class='tse-content'>").appendTo(helpAreaTop);
 
@@ -220,7 +222,7 @@ var main = function() {
                 openStoredPastaButton.find('.VVVVVV').text("►►");
                 storedPastaTop = $("<div class='tse-scrollable scroll scroll-dark help-popup-top-cttv' style='right: 100%;" +
 					"transition: right 0.3s; z-index: 2;'>")
-                    .appendTo('#right_col');
+                    .appendTo('.right-column');
                 var storedPastaArea = $("<div class='tse-content'>").appendTo(storedPastaTop);
 
                 var closeStoredPasta = $("<span style='position: absolute; top: 10px; right: 10px; z-index: 9; " +
@@ -341,8 +343,9 @@ var main = function() {
         if (helpPopup)
             return false;
 
+        
         helpPopup = $("<div class=help-popup-cttv><font size=4 color=black><b>?</b></font></div>")
-            .appendTo(chatBox.parent());
+            .appendTo(chatArea);
 
         helpPopup.on('click', function(e) {
             e.stopPropagation();
@@ -614,37 +617,39 @@ var main = function() {
         if (keyCode === keycodes.ENTER)
             onSendMessage();
     };
+    chatBox.on('keydown', chatBoxOnKeyDown);
 
-    function hasEventHandler(element, handler) {
-        var events = $._data(element, "events");
+    // function hasEventHandler(element, handler) {
+    //     var events = $._data(element, "events");
 
-        for (var i in events.keydown) {
-            if (typeof (events.keydown[i].handler) !== "undefined" && events.keydown[i].handler == handler) {
-                return true;
-            }
-        }
+    //     for (var i in events.keydown) {
+    //         if (typeof (events.keydown[i].handler) !== "undefined" && events.keydown[i].handler == handler) {
+    //             return true;
+    //         }
+    //     }
 
-        return false;
-    }
+    //     return false;
+    // }
 
-    var stableRetries = 30;
-    var currentRetries = 0;
-    var rebindChat;
-    var chatRebindLoop = function() {
-        if (!hasEventHandler(chatBox[0], chatBoxOnKeyDown)) {
-            chatBox.on('keydown', chatBoxOnKeyDown);
-            currentRetries = 0;
-        }
-        else {
-            currentRetries++;
-            if (currentRetries === stableRetries) {
-                clearInterval(rebindChat);
-                rebindChat = setInterval(chatRebindLoop, 20 * 1000);
-            }
-        }
+    // var stableRetries = 30;
+    // var currentRetries = 0;
+    // var rebindChat;
+    // var chatRebindLoop = function() {
+    //     if (!hasEventHandler(chatBox[0], chatBoxOnKeyDown)) {
+    //         chatBox.on('keydown', chatBoxOnKeyDown);
+    //         currentRetries = 0;
+    //     }
+    //     else {
+    //         currentRetries++;
+    //         if (currentRetries === stableRetries) {
+    //             clearInterval(rebindChat);
+    //             rebindChat = setInterval(chatRebindLoop, 20 * 1000);
+    //         }
+    //     }
 
-    };
-    rebindChat = setInterval(chatRebindLoop, 200);
+    // };
+    // rebindChat = setInterval(chatRebindLoop, 200);
+
 
     // Instead of hooking the button, which BTTV eats, we hook the chat area. \o/
     chatArea.on('click', function(e) {
@@ -654,48 +659,76 @@ var main = function() {
 		}
     });
 
-    var parseNonBttvChat = function(element) {
-        var message = element.find(".message");
-        var content = message.contents();
-        var finalMessage = "";
-        content.each(function(i) {
-            var c = $(this);
-            if (c.is("img")) {
-                finalMessage += c.attr("alt");
-            }
-            else {
-                finalMessage += c.text();
+    // var parseNonBttvChat = function(element) {
+    //     var message = element.find(".message");
+    //     var content = message.contents();
+    //     var finalMessage = "";
+    //     content.each(function(i) {
+    //         var c = $(this);
+    //         if (c.is("img")) {
+    //             finalMessage += c.attr("alt");
+    //         }
+    //         else {
+    //             finalMessage += c.text();
+    //         }
+    //     });
+    //     finalMessage = finalMessage.trim();
+    //     return finalMessage;
+    // };
+
+
+    function parseChat($element) {
+        var messagetext = '';
+        $.each($element.find('*'), function (i, val) {
+            var $val = $(val);
+            if ($val.hasClass('chat-line__message--emote')) {
+                messagetext += $val.attr('alt'); return;
+            } else if ($val.data('a-target') === 'chat-message-text' ||
+                $val.data('a-target') === 'chat-message-mention') {
+                console.log($val);
+                if ($val.find('.bttv').length !== 0) {
+                    $bttv = ($val.find('.bttv'));
+                    var $textnodes = $val.children().contents().filter(function () { return this.nodeType === 3 });
+                    messagetext += $textnodes.eq(0).text().replace(/\n */g, '');
+                    messagetext += $bttv.attr('alt');
+                    messagetext += $textnodes.eq(1).text().replace(/\n */g, ' ');
+                } else {
+                    messagetext += $val.text();
+                }
+                return;
             }
         });
-        finalMessage = finalMessage.trim();
-        return finalMessage;
-    };
+        console.log(messagetext);
+        return messagetext;
+    }
 
     var chatOnClickCssTag;
-	var onClickCss = $("<style scoped type='text/css'>.chat-line { cursor: pointer !important; } \n" +
+    var onClickCss = $(
+        "<style scoped type='text/css'>.chat-line { cursor: pointer !important; } \n" +
 		".chat-line:hover { background-color: rgb(126, 126, 126) !important; } \n" +
-		".chat-line > * { pointer-events: none!important; }</style>");
+        ".chat-line > * { pointer-events: none!important; }</style>"
+    );
 
-    var addChatOnClick = function() {
-        chatMessageArea.on('mousedown', function(e) {
+    var addChatOnClick = function () {
+        console.log('chat onclick called');
+        chatMessageArea.on('mousedown', function (e) {
+            console.log('chatclick triggered');
+            console.log(e.target);
             var button = e.which;
-            chatMessageOnClick($(e.target), e, button);
+            var $target = $(e.target);
+            if (!$target.hasClass('chat-line__message')) $target = $target.parents('.chat-line__message');
+            e.preventDefault();
+            chatMessageOnClick($target, e, button);
         });
-		chatOnClickCssTag = onClickCss.appendTo(chatMessageArea.parent());
+		chatOnClickCssTag = onClickCss.appendTo(chatMessageArea);
     };
 
     var chatMessageOnClick = function($this, e, button) {
         if (button === 1 || button === 2) {
             var newMessage;
-            var dataRaw = $this.find(".message").attr("data-raw");
-            if (typeof dataRaw === "undefined") {
-                newMessage = parseNonBttvChat($this);
-            }
-            else {
-                newMessage = decodeURIComponent(dataRaw);
-            }
+            newMessage = parseChat($this);
             if (button === 2) {
-                newMessage = newMessage.insertAt(0, $this.find(".from").text() + ": ");
+                newMessage = newMessage.insertAt(0, $this.find(".chat-author__display-name").text() + ": ");
             }
             var colCss = $this.find(".colon").css("display");
             if (colCss === "none") {
@@ -703,8 +736,7 @@ var main = function() {
             }
             chatBox.val(newMessage).focus();
             onChatBoxChange();
-            e.preventDefault();
-            doAutoSend();
+            //doAutoSend();
         }
     };
 
@@ -896,7 +928,7 @@ var main = function() {
 };
 
 var waitForChatLoad = function() {
-	console.log("CTTV loading chat");
+    console.log("CTTV loading chat");
 	document.addEventListener('cancerttv-start', function() {
 		main();
 	});
