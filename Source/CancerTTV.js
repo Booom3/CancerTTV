@@ -56,7 +56,7 @@ var main = function() {
     var chatSend = $('.send-chat-button');
 
     var cttvStyleTag = $(
-        "<style type='text/css'>\n" +
+        "<style scoped type='text/css'>\n" +
 		".hide-more-messages .more-messages-indicator { display: none; }" +
 		".help-popup-cttv-visible { z-index: 9; left: -45px !important; opacity: 1 !important; pointer-events: auto !important; cursor: pointer;}\n" +
 		".help-popup-cttv { text-align: center; vertical-align: middle; line-height: 22px;\n" +
@@ -64,7 +64,7 @@ var main = function() {
 		"background-color: rgb(100, 65, 165); transition: opacity .3s, left .3s, transform .3s; pointer-events: none; }\n" +
 		".help-popup-cttv:hover { box-shadow: 0px 0px 12px rgb(100, 65, 165); transform: scale(1.2); }\n" +
 		"" +
-		".help-popup-top-cttv { position:absolute; right: 100%; bottom: 50px; float: right; z-index: 3; overflow-y: scroll; overflow-x: hidden;" +
+		".help-popup-top-cttv { position:absolute; right: 100%; bottom: 50px; float: right; z-index: 3;" +
 		"border: rgba(100, 100, 100, 0.5) solid 1px; background - color: rgb(37, 24, 61); width: 250px; height: 350px; }\n" +
 		"" +		
 		".help-popup-message-cttv { text-align: center; background-color: rgb(60, 60, 60); box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.15) inset;\n" +
@@ -105,16 +105,16 @@ var main = function() {
 		
         if (helpPopup) helpPopup.css('display', 'none');
 
-        var helpAreaTop = $("<div class='tse-scrollable scroll scroll-dark help-popup-top-cttv'>")
+        var helpAreaTop = $("<div class='help-popup-top-cttv'>")
         .appendTo('.right-column');
 
-        var helpArea = $("<div class='tse-content'>").appendTo(helpAreaTop);
+        var helpArea = $("<div data-simplebar style='height: 100%;'>").appendTo(helpAreaTop);
 
-        var optionsDropdown = $("<label class='help-popup-message-cttv' style='margin: 0px; background-color: rgb(117, 80, 186); cursor: pointer;'"+
+        var optionsDropdown = $("<div class='help-popup-message-cttv' style='margin: 0px; background-color: rgb(117, 80, 186); cursor: pointer;'"+
 "title='Click this to open the options menu.'>"+
-"<span class='VVVVVV' style='text-align: left; position: absolute; left: 5px;'>▼▼</span>"+
+"<span class='VVVVVV' style='float: left;'>▼▼</span>"+
 "<span style='text-align: center;'>OPTIONS</span>"+
-"<span class='VVVVVV' style='text-align: right; position: absolute; right: 5px;'>▼▼</span></label>").appendTo(helpArea);
+"<span class='VVVVVV' style='float: right;'>▼▼</span></div>").appendTo(helpArea);
 
 
         var optionsDropdownShown = false;
@@ -200,8 +200,6 @@ var main = function() {
 						}
 					}));
 
-                optionsDropdownChildren[0].css("border-bottom", "rgb(117, 80, 186) solid 6px");
-
                 optionsDropdownShown = true;
             }
             else {
@@ -209,21 +207,20 @@ var main = function() {
                 optionsDropdownChildren.forEach(function(el) { el.remove(); });
                 optionsDropdownShown = false;
             }
-            helpAreaTop.TrackpadScrollEmulator('recalculate');
         });
 
         var openStoredPastaButton = $("<label class='help-popup-message-cttv' style='margin: 0px; background-color: rgb(117, 80, 186); cursor: pointer;'" +
 			"title='Click this to view and change your stored pasta.'>" +
-			"<span class='VVVVVV' style='text-align: left; position: absolute; left: 5px;'>" + (storedPastaShown ? "►►" : "◄◄") +
+			"<span class='VVVVVV' style='float: left;'>" + (storedPastaShown ? "►►" : "◄◄") +
 			"</span><span style='text-align: center;'>STORED PASTA</span></label>").appendTo(helpArea);
         openStoredPastaButton.on('click', function(e) {
             if (!storedPastaShown) {
                 storedPastaShown = true;
                 openStoredPastaButton.find('.VVVVVV').text("►►");
-                storedPastaTop = $("<div class='tse-scrollable scroll scroll-dark help-popup-top-cttv' style='right: 100%;" +
+                storedPastaTop = $("<div class='help-popup-top-cttv' style='right: 100%;" +
 					"transition: right 0.3s; z-index: 2;'>")
                     .appendTo('.right-column');
-                var storedPastaArea = $("<div class='tse-content'>").appendTo(storedPastaTop);
+                var storedPastaArea = $("<div data-simplebar style='height: 100%;'>").appendTo(storedPastaTop);
 
                 var closeStoredPasta = $("<span style='position: absolute; top: 10px; right: 10px; z-index: 9; " +
 					"font-size: 40px; opacity: 0.3; cursor: pointer; color: red;'>X</span>")
@@ -244,9 +241,6 @@ var main = function() {
                         .on('keyup', makeOnKeyupPasta(i));
                 }
 
-                storedPastaTop.TrackpadScrollEmulator({ 
-                    // ヽ༼ಢ_ಢ༽ﾉ (thank you BTTV)
-                    scrollbarHideStrategy: 'rightAndBottom' });
 				storedPastaTop.css("right", "calc(100% + 250px)");
             }
             else
@@ -314,14 +308,11 @@ var main = function() {
             });
         });
 
-        helpAreaTop.TrackpadScrollEmulator({ 
-            // ヽ༼ಢ_ಢ༽ﾉ (thank you BTTV)
-            scrollbarHideStrategy: 'rightAndBottom' });
-        var helpScrollBar = $('.help-area-top-cttv .tse-scroll-content');
-        helpScrollBar.scrollTop(lastHelpPopupScrollPosition);
+        var helpSimpleBar = new SimpleBar(helpArea.get(0));
+        helpSimpleBar.getScrollElement().scrollTop = lastHelpPopupScrollPosition;
 
         var helpPopupCleanup = function() {
-            lastHelpPopupScrollPosition = helpScrollBar.scrollTop();
+            lastHelpPopupScrollPosition = helpSimpleBar.getScrollElement().scrollTop;
             if (helpPopup) helpPopup.css('display', 'inline');
             cttvMenuShown = false;
 			if (storedPastaTop) {
@@ -533,7 +524,7 @@ var main = function() {
 		}
     };
 
-    var onChatBoxChange = function() {
+    var onChatBoxChange = function () {
         if (chatBox.val().length > 500) {
             chatBox.val(chatBox.val().slice(0, 500));
         }
@@ -542,9 +533,12 @@ var main = function() {
             chatBoxRepeatSpamEndLength = 0;
         }
         chatBoxHasProgramChange = false;
+        var inputEvent = new CustomEvent('input', { bubbles: true, detail: 'cttv' });
+        chatBox[0].dispatchEvent(inputEvent);
     };
 
-    chatBox.on('input', function(e) {
+    chatBox.on('input', function (e) {
+        if (e.detail === 'cttv') return;
         onChatBoxChange();
     });
 
@@ -619,38 +613,6 @@ var main = function() {
     };
     chatBox.on('keydown', chatBoxOnKeyDown);
 
-    // function hasEventHandler(element, handler) {
-    //     var events = $._data(element, "events");
-
-    //     for (var i in events.keydown) {
-    //         if (typeof (events.keydown[i].handler) !== "undefined" && events.keydown[i].handler == handler) {
-    //             return true;
-    //         }
-    //     }
-
-    //     return false;
-    // }
-
-    // var stableRetries = 30;
-    // var currentRetries = 0;
-    // var rebindChat;
-    // var chatRebindLoop = function() {
-    //     if (!hasEventHandler(chatBox[0], chatBoxOnKeyDown)) {
-    //         chatBox.on('keydown', chatBoxOnKeyDown);
-    //         currentRetries = 0;
-    //     }
-    //     else {
-    //         currentRetries++;
-    //         if (currentRetries === stableRetries) {
-    //             clearInterval(rebindChat);
-    //             rebindChat = setInterval(chatRebindLoop, 20 * 1000);
-    //         }
-    //     }
-
-    // };
-    // rebindChat = setInterval(chatRebindLoop, 200);
-
-
     // Instead of hooking the button, which BTTV eats, we hook the chat area. \o/
     chatArea.on('click', function(e) {
         if ($(e.target).hasClass("send-chat-button") || $(e.target).parent().hasClass("send-chat-button")) {
@@ -659,39 +621,26 @@ var main = function() {
 		}
     });
 
-    // var parseNonBttvChat = function(element) {
-    //     var message = element.find(".message");
-    //     var content = message.contents();
-    //     var finalMessage = "";
-    //     content.each(function(i) {
-    //         var c = $(this);
-    //         if (c.is("img")) {
-    //             finalMessage += c.attr("alt");
-    //         }
-    //         else {
-    //             finalMessage += c.text();
-    //         }
-    //     });
-    //     finalMessage = finalMessage.trim();
-    //     return finalMessage;
-    // };
-
-
     function parseChat($element) {
         var messagetext = '';
-        $.each($element.find('*'), function (i, val) {
+        $.each($element.children(), function (i, val) {
             var $val = $(val);
-            if ($val.hasClass('chat-line__message--emote')) {
-                messagetext += $val.attr('alt'); return;
+            if ($val.data('a-target') === 'emote-name') {
+                messagetext += $val.find('img').attr('alt'); return;
             } else if ($val.data('a-target') === 'chat-message-text' ||
                 $val.data('a-target') === 'chat-message-mention') {
-                console.log($val);
-                if ($val.find('.bttv').length !== 0) {
-                    $bttv = ($val.find('.bttv'));
-                    var $textnodes = $val.children().contents().filter(function () { return this.nodeType === 3 });
-                    messagetext += $textnodes.eq(0).text().replace(/\n */g, '');
-                    messagetext += $bttv.attr('alt');
-                    messagetext += $textnodes.eq(1).text().replace(/\n */g, ' ');
+                if ($val.find('.bttv, .bttv-channel').length !== 0) {
+                    var $bttv = $val.find('.bttv, .bttv-channel');
+                    var $nodes = $val.children().contents();
+                    $.each($nodes, function (j, bttvnode) {
+                        if (bttvnode.nodeType === 3) {
+                            messagetext += $(bttvnode).text().replace(/\n */g, '');
+                            return;
+                        }
+
+                        messagetext += $(bttvnode).find('img').attr('alt');
+                        messagetext += ' ';
+                    });
                 } else {
                     messagetext += $val.text();
                 }
@@ -705,8 +654,8 @@ var main = function() {
     var chatOnClickCssTag;
     var onClickCss = $(
         "<style scoped type='text/css'>.chat-line { cursor: pointer !important; } \n" +
-		".chat-line:hover { background-color: rgb(126, 126, 126) !important; } \n" +
-        ".chat-line > * { pointer-events: none!important; }</style>"
+		".chat-line__message:hover { background-color: rgb(126, 126, 126) !important; } \n" +
+        ".chat-line__message > * { pointer-events: none!important; }</style>"
     );
 
     var addChatOnClick = function () {
