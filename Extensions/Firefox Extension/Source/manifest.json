@@ -17,15 +17,16 @@
 		{
 			"matches": [
 				"http://www.twitch.tv/*",
-				"https://www.twitch.tv/*"
+				"https://www.twitch.tv/*",
+				"http://go.twitch.tv/*",
+				"https://go.twitch.tv/*"
 			],
 			"js": [
 				"jquery-2.2.1.min.js",
-				"jquery.trackpad-scroll-emulator.min.js",
+				"simplebar.js",
 				"CancerTTV.js",
 				"Injector.js"
-			],
-			"run_at": "document_end"
+			]
 		}
 	],
 	"web_accessible_resources": [
