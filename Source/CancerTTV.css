@@ -95,6 +95,9 @@
 .stored-pasta-top.move-left {
 	right: calc(100% + 250px)
 }
+.stored-pasta-top.on-top {
+    z-index: 4;
+}
 .global-limit-display {
     position: absolute;
     text-align: center;

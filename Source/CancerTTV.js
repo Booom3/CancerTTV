@@ -360,67 +360,67 @@ cleanupFunctions.push(function () {
 // Stored Pasta Menu
 
 function toggleStoredPasta() {
-    if (!storedPastaShown) {
-        storedPastaShown = true;
-        $menuAreaTop.find('#stored-pasta-button').text('►►');
-        $storedPastaTop = $(
-            '<div class="help-popup-top-cttv stored-pasta-top">');
-
-        var storedPastaArea = $(
-            '<div data-simplebar style="height: 100%;">')
-            .appendTo($storedPastaTop);
-
-        var closeStoredPasta = $(
-            '<span class="close-help-area-button">X</span>')
-            .appendTo($storedPastaTop);
-
-        closeStoredPasta.on('click', function () {
-            cleanupStoredPasta();
-        });
-        function makeOnKeyupPasta(i) {
-            return function () {
-                setStoredPasta(i, this.value);
-            };
-        }
-        for (var i = 0; i < storedPasta.length; i++) {
-            var d = $(helpPopupDiv() +
-                getKbd('Ctrl', (i === 9 ? 0 : i + 1)) + '</div>')
-                .appendTo(storedPastaArea);
-            $('<textarea rows=5 maxlength=500 />')
-                .appendTo(d)
-                .val(storedPasta[i])
-                .on('keyup', makeOnKeyupPasta(i));
-        }
-
-        $storedPastaTop.appendTo('.right-column');
-
-        setTimeout(function () {
-            $storedPastaTop.addClass('move-left');
-        }, 10);
-    }
-    else {
+    if ($storedPastaTop) {
         cleanupStoredPasta();
+        return;
     }
+
+    $menuAreaTop.find('#stored-pasta-button').text('►►');
+    $storedPastaTop = $(
+        '<div class="help-popup-top-cttv stored-pasta-top">');
+
+    var storedPastaArea = $(
+        '<div data-simplebar style="height: 100%;">')
+        .appendTo($storedPastaTop);
+
+    var closeStoredPasta = $(
+        '<span class="close-help-area-button">X</span>')
+        .appendTo($storedPastaTop);
+
+    closeStoredPasta.on('click', function () {
+        cleanupStoredPasta();
+    });
+    function makeOnKeyupPasta(i) {
+        return function () {
+            setStoredPasta(i, this.value);
+        };
+    }
+    for (var i = 0; i < storedPasta.length; i++) {
+        var d = $(helpPopupDiv() +
+            getKbd('Ctrl', (i === 9 ? 0 : i + 1)) + '</div>')
+            .appendTo(storedPastaArea);
+        $('<textarea rows=5 maxlength=500 />')
+            .appendTo(d)
+            .val(storedPasta[i])
+            .on('keyup', makeOnKeyupPasta(i));
+    }
+
+    $storedPastaTop.appendTo('.right-column');
+
+    setTimeout(function () {
+        $storedPastaTop.addClass('move-left');
+    }, 10);
 }
 
 function cleanupStoredPasta() {
     if (!$storedPastaTop)
         return;
 
-    storedPastaShown = false;
     debug('CTTV spt: ' + $storedPastaTop[0].style.right);
-    if ($storedPastaTop[0].style.right !== '100%') {
-        $storedPastaTop.removeClass('move-left');
+    if ($storedPastaTop.hasClass('move-left')) {
+        $storedPastaTop
+            .removeClass('move-left')
+            .removeClass('on-top');
         $menuAreaTop.find('#stored-pasta-button').text('◄◄');
         var storedPastaTopTemp = $storedPastaTop;
         storedPastaTopTemp.one('transitionend', function () {
             storedPastaTopTemp.remove();
         });
-        $storedPastaTop = false;
     }
     else {
         $storedPastaTop.remove();
     }
+    $storedPastaTop = false;
 }
 
 function setStoredPasta (num, val) {
@@ -435,8 +435,6 @@ cleanupFunctions.push(function () {
 // Menu
 
 var lastHelpPopupScrollPosition = 2;
-var cttvMenuShown = false;
-var storedPastaShown = false;
 var menuSimpleBar;
 
 var kappaImage = '<img class="emoticon" ' +
@@ -449,16 +447,14 @@ function getKbd() {
 }
 
 function toggleCttvMenu () {
-    if (cttvMenuShown) {
+    if ($menuAreaTop) {
         removeCttvMenu();
         return;
     }
 
-    cttvMenuShown = true;
-
     // If stored pasta menu is open, move it out of the way
     if ($storedPastaTop) {
-        $storedPastaTop.css('right', 'calc(100% + 250px)');
+        $storedPastaTop.addClass('move-left');
     }
 
     // Hide the help popup
@@ -503,16 +499,16 @@ function toggleCttvMenu () {
         }
     });
 
-    var openStoredPastaButton = $(
+    var $openStoredPastaButton = $(
         '<label class="help-popup-message-cttv help-popup-button-cttv" ' +
         'title="Click this to view and change your stored pasta.">' +
         '<span class="VVVVVV" style="float: left;" id="stored-pasta-button">' +
-        (storedPastaShown ? '►►' : '◄◄') +
+        ($storedPastaTop ? '►►' : '◄◄') +
         '</span><span style="text-align: center;">' +
         'STORED PASTA</span></label>')
         .appendTo($menuArea);
 
-    openStoredPastaButton.on('click', function () {
+    $openStoredPastaButton.on('click', function () {
         toggleStoredPasta();
     });
 
@@ -589,10 +585,10 @@ function removeCttvMenu() {
 
     lastHelpPopupScrollPosition = menuSimpleBar.getScrollElement().scrollTop;
     if ($helpPopup) $helpPopup.css('display', 'inline');
-    cttvMenuShown = false;
     if ($storedPastaTop) {
-        $storedPastaTop.css('z-index', '4');
-        $storedPastaTop.css('right', '100%');
+        $storedPastaTop
+            .removeClass('move-left')
+            .addClass('on-top');
     }
     $menuAreaTop.remove();
     $menuAreaTop = false;
