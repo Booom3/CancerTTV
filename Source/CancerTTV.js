@@ -10,7 +10,7 @@ var repeatSpamArr = [',', '.', '-', '\'', '_', ':', ';'];
 var sendingTooFastCooldown = 1000;
 
 // Storage helpers
-var getBoolFromStorage = function (varName, defaultCase) {
+function getBoolFromStorage (varName, defaultCase) {
     var val = window.localStorage.getItem(varName);
     if (val === null)
         return defaultCase;
@@ -41,7 +41,7 @@ var lastMessage = "";
 var chatBoxRepeatSpamEndLength = 0;
 var ctrlIsHeld = false;
 var cleanupFunctions = [];
-var main = function () {
+function main () {
 
     debug("CTTV Main called");
     debug($);
@@ -52,11 +52,11 @@ var main = function () {
     var chatBox = chatArea.find('div textarea');
     var chatSend = $('.chat-buttons-container [data-a-target="chat-send-button"]');
 
-    var helpPopupDiv = function (addString) {
+    function helpPopupDiv (addString) {
         return "<div class='help-popup-message-cttv' " + addString + ">";
     };
     var kappaImage = "<img class='emoticon' src='https://static-cdn.jtvnw.net/emoticons/v1/25/1.0' />";
-    var getKbd = function () {
+    function getKbd () {
         var returnStr = "<span class='kbd'>" + arguments[0] + "</span>";
         for (var i = 1; i < arguments.length; i++)
             returnStr += " + <span class='kbd'>" + arguments[i] + "</span>";
@@ -67,23 +67,27 @@ var main = function () {
     var cttvMenuShown = false;
     var storedPastaTop;
     var storedPastaShown = false;
-    var showCttvMenu = function () {
+    function showCttvMenu () {
         if (cttvMenuShown)
             return false;
         cttvMenuShown = true;
+
+        // If stored pasta menu is open, move it out of the way
         if (storedPastaTop) {
             storedPastaTop.css("right", "calc(100% + 250px)");
         }
 
+        // Hide the help popup
         if (helpPopup) helpPopup.css('display', 'none');
 
-        var helpAreaTop = $("<div class='help-popup-top-cttv'>")
-            .appendTo('.right-column');
+        var helpAreaTop = $("<div class='help-popup-top-cttv'>");
 
-        var helpArea = $("<div data-simplebar style='height: 100%;'>")
+        var helpArea = $("<div style='height: 100%;'>")
             .appendTo(helpAreaTop);
 
-        var optionsDropdown = $("<div class='help-popup-message-cttv' style='margin: 0px; background-color: rgb(117, 80, 186); cursor: pointer;'" +
+        var optionsDropdown = $(
+            "<div class='help-popup-message-cttv' style='margin: 0px;" +
+            "background - color: rgb(117, 80, 186); cursor: pointer; '" +
             "title='Click this to open the options menu.'>" +
             "<span class='VVVVVV' style='float: left;'>▼▼</span>" +
             "<span style='text-align: center;'>OPTIONS</span>" +
@@ -102,15 +106,20 @@ var main = function () {
                 // These are created in reverse order.
                 // ¯\_(ツ)_/¯
 
-                optionsDropdownChildren.push($("<label class='help-popup-message-cttv' style='margin: 0px;'>" +
-                    "<input  type='checkbox' " + (enableStoredPastaKeys ? "checked" : "") + "/> Enable stored pasta hotkeys</label>")
+                optionsDropdownChildren.push($(
+                    "<label class='help-popup-message-cttv' style='margin: 0px;'>" +
+                    "<input  type='checkbox' " + (enableStoredPastaKeys ? "checked" : "") +
+                    "/> Enable stored pasta hotkeys</label>")
                     .insertAfter(optionsDropdown)
                     .on('change', function (e) {
                         setEnableStoredPastaKeys(e.target.checked);
                     }));
 
-                optionsDropdownChildren.push($(helpPopupDiv("title='It doesn&#39;t have to be just an emote.&#10;Any characters are" +
-                    " allowed, including spaces.'") + "Stored emote<br><input type='textarea' value='" + cttvSelectedEmote + "' style='width: 90%;' />")
+                optionsDropdownChildren.push($(helpPopupDiv(
+                    "title='It doesn&#39;t have to be just an emote.&#10;Any characters are" +
+                    " allowed, including spaces.'") +
+                    "Stored emote<br><input type='textarea' value='" + cttvSelectedEmote +
+                    "' style='width: 90%;' />")
                     .insertAfter(optionsDropdown)
                     .on('keyup', function (e) {
                         setSelectedEmote(e.target.value);
@@ -186,21 +195,20 @@ var main = function () {
                 storedPastaShown = true;
                 openStoredPastaButton.find('.VVVVVV').text("►►");
                 storedPastaTop = $(
-                    "<div class='help-popup-top-cttv' style='right: 100%;" +
-                    "transition: right 0.3s; z-index: 2;'>");
+                    "<div class='help-popup-top-cttv stored-pasta-top'>");
 
                 var storedPastaArea = $(
                     "<div data-simplebar style='height: 100%;'>")
                     .appendTo(storedPastaTop);
 
                 var closeStoredPasta = $(
-                    "<span style='position: absolute; top: 10px; right: 10px; z-index: 9; " +
-                    "font-size: 40px; opacity: 0.3; cursor: pointer; color: red;'>X</span>")
+                    "<span class='close-help-area-button'>X</span>")
                     .appendTo(storedPastaTop);
+                
                 closeStoredPasta.on('click', function (e) {
                     cleanupStoredPasta();
                 });
-                var makeOnKeyupPasta = function (i) {
+                function makeOnKeyupPasta (i) {
                     return function (e) {
                         setStoredPasta(i, this.value);
                     };
@@ -215,20 +223,18 @@ var main = function () {
 
                 storedPastaTop.appendTo('.right-column');
 
-                setTimeout(function () { storedPastaTop.css("right", "calc(100% + 250px)") }, 10);
+                setTimeout(function () { storedPastaTop.addClass('move-left') }, 10);
             }
             else {
                 cleanupStoredPasta();
             }
-
-
         });
 
-        var cleanupStoredPasta = function () {
+        function cleanupStoredPasta () {
             storedPastaShown = false;
             debug("CTTV spt: " + storedPastaTop[0].style.right);
             if (storedPastaTop[0].style.right !== "100%") {
-                storedPastaTop.css("z-index", "2").css("right", "100%");
+                storedPastaTop.removeClass('move-left');
                 openStoredPastaButton.find('.VVVVVV').text("◄◄");
                 var storedPastaTopTemp = storedPastaTop;
                 storedPastaTopTemp.one('transitionend', function (e) {
@@ -243,27 +249,39 @@ var main = function () {
 
         var hints = [];
 
-        hints.push($(helpPopupDiv("title='Or middle click to copy their name too!'") + getKbd("Ctrl") +
-            "<br>Hold down and left click any message to copy it to your chatbox!</div>").appendTo(helpArea));
+        hints.push($(helpPopupDiv(
+            "title='Or middle click to copy their name too!'") +
+            getKbd("Ctrl") + "<br>Hold down and left click any message to copy it to your chatbox!</div>")
+            .appendTo(helpArea));
 
-        hints.push($(helpPopupDiv("title='Attaches a random squiggly at the end to bypass twitch spam filters.'") +
-            getKbd("Ctrl", "O") + "<br>Sends your previous message again!</div>").appendTo(helpArea));
+        hints.push($(helpPopupDiv(
+            "title='Attaches a random squiggly at the end to bypass twitch spam filters.'") +
+            getKbd("Ctrl", "O") + "<br>Sends your previous message again!</div>")
+            .appendTo(helpArea));
 
-        hints.push($(helpPopupDiv("title='Current chatbox message. If it&#39;s empty, last message sent.&#10;" +
+        hints.push($(helpPopupDiv(
+            "title='Current chatbox message. If it&#39;s empty, last message sent.&#10;" +
             "Does not work with 0, browser limitation.'") + getKbd("Ctrl", "Shift", "1-9") +
-            "<br>Store the chatbox text.</div>").appendTo(helpArea));
+            "<br>Store the chatbox text.</div>")
+            .appendTo(helpArea));
 
-        hints.push($(helpPopupDiv("title='Inserts the stored emote between all spaces in the current chat box text.&#10;" +
-            "Uses your stored emote defined in options.'") + "Test Message Test<br>" + getKbd("Ctrl", "K") + "<br>" +
-            kappaImage + " Test " + kappaImage + " Message " + kappaImage + " Test " + kappaImage + "</div>").appendTo(helpArea));
+        hints.push($(helpPopupDiv(
+            "title='Inserts the stored emote between all spaces in the current chat box text.&#10;" +
+            "Uses your stored emote defined in options.'") + "Test Message Test<br>" + getKbd("Ctrl", "K") +
+            "<br>" + kappaImage + " Test " + kappaImage + " Message " + kappaImage + " Test " + kappaImage + "</div>")
+            .appendTo(helpArea));
 
-        hints.push($(helpPopupDiv("title='Inserts the stored emote at the beginning and end of the current chat box text.&#10;" +
+        hints.push($(helpPopupDiv(
+            "title='Inserts the stored emote at the beginning and end of the current chat box text.&#10;" +
             "Uses your stored emote defined in options.'") + "Test Message Test<br>" + getKbd("Ctrl", "I") + "<br>" +
-            kappaImage + " Test Message Test " + kappaImage + "</div>").appendTo(helpArea));
+            kappaImage + " Test Message Test " + kappaImage + "</div>")
+            .appendTo(helpArea));
 
-        hints.push($(helpPopupDiv("title='Repeats the current chat box message in a nice, convenient way.'") + kappaImage + " " +
-            "Test Message Test " + kappaImage + "<br>" + getKbd("Ctrl", "L") + "<br>" +
-            kappaImage + " Test Message Test " + kappaImage + " Test Message Test " + kappaImage + "</div>").appendTo(helpArea));
+        hints.push($(helpPopupDiv(
+            "title='Repeats the current chat box message in a nice, convenient way.'") + kappaImage +
+            " Test Message Test " + kappaImage + "<br>" + getKbd("Ctrl", "L") + "<br>" +
+            kappaImage + " Test Message Test " + kappaImage + " Test Message Test " + kappaImage + "</div>")
+            .appendTo(helpArea));
 
         hints.push($(helpPopupDiv("title='Inserts the first word of the chat box betwen all spaces.'") + kappaImage + " " +
             "Test Message Test<br>" + getKbd("Ctrl", "J") + "<br>" +
@@ -281,10 +299,7 @@ var main = function () {
             });
         });
 
-        var helpSimpleBar = new SimpleBar(helpArea.get(0));
-        helpSimpleBar.getScrollElement().scrollTop = lastHelpPopupScrollPosition;
-
-        var helpPopupCleanup = function () {
+        function helpPopupCleanup () {
             lastHelpPopupScrollPosition = helpSimpleBar.getScrollElement().scrollTop;
             if (helpPopup) helpPopup.css('display', 'inline');
             cttvMenuShown = false;
@@ -296,15 +311,18 @@ var main = function () {
         };
 
         var closeHelpArea = $(
-            "<span style='position: absolute; top: 10px; right: 10px; z-index: 9999999; " +
-            "font-size: 40px; opacity: 0.3; cursor: pointer; color: red;'>X</span>")
+            "<span class='close-help-area-button'>X</span>")
             .appendTo(helpAreaTop);
         closeHelpArea.on('click', function (e) {
             helpPopupCleanup();
         });
+
+        helpAreaTop.appendTo('.right-column');
+        var helpSimpleBar = new SimpleBar(helpArea.get(0));
+        helpSimpleBar.getScrollElement().scrollTop = lastHelpPopupScrollPosition;
     };
 
-    var createHelpPopup = function () {
+    function createHelpPopup () {
         if (helpPopup)
             return false;
 
@@ -319,12 +337,12 @@ var main = function () {
         });
     };
 
-    var removeHelpPopup = function () {
+    function removeHelpPopup () {
         helpPopup.remove();
         helpPopup = false;
     };
 
-    var setShowHelpPopup = function (newValue) {
+    function setShowHelpPopup (newValue) {
         showHelpPopupQuestionMark = newValue;
         window.localStorage.setItem("cttvShowQuestionMark", newValue.toString());
     };
@@ -333,19 +351,19 @@ var main = function () {
         createHelpPopup();
     }
 
-    var setEnableStoredPastaKeys = function (newValue) {
+    function setEnableStoredPastaKeys (newValue) {
         enableStoredPastaKeys = newValue;
         window.localStorage.setItem("cttvEnableStoredPastaKeys", newValue.toString());
     };
 
-    var setStoredPasta = function (num, val) {
+    function setStoredPasta (num, val) {
         storedPasta[num] = val;
         window.localStorage.setItem("cttvStoredPasta" + num, val);
     };
 
     var globalLimitDisplay;
     var globalLimitDisplayInterval;
-    var createGlobalLimitDisplay = function () {
+    function createGlobalLimitDisplay () {
         if (globalLimitDisplay)
             return;
 
@@ -357,7 +375,7 @@ var main = function () {
             .css("transition", "font-size .2s, color .2s");
 
         var lastLen = -1;
-        var antiGlobalMessageLoop = function () {
+        function antiGlobalMessageLoop () {
             var diff = new Date().getTime() - antiGlobalTimekeeper[0];
             if (diff > antiGlobalTimeLimit * 1000) {
                 antiGlobalTimekeeper.shift();
@@ -381,7 +399,7 @@ var main = function () {
         globalLimitDisplayInterval = setInterval(antiGlobalMessageLoop, 100);
     };
 
-    var removeGlobalLimitDisplay = function () {
+    function removeGlobalLimitDisplay () {
         if (!globalLimitDisplay)
             return;
 
@@ -390,7 +408,7 @@ var main = function () {
         globalLimitDisplay = false;
     };
 
-    var setShowGlobalLimitDisplay = function (newValue) {
+    function setShowGlobalLimitDisplay (newValue) {
         showGlobalMessageLimitCounter = newValue;
         window.localStorage.setItem("cttvShowGlobalMessageLimit", newValue.toString());
     };
@@ -400,7 +418,7 @@ var main = function () {
 
     var sendingTooFastIndicator;
     var sendingTooFastInterval;
-    var createSendingTooFastIndicator = function () {
+    function createSendingTooFastIndicator () {
         if (sendingTooFastIndicator)
             return;
 
@@ -413,7 +431,7 @@ var main = function () {
             .css("font-size", "60px");
 
         var lastState = -1;
-        var sendTooFastIsLastState = function (currentState) {
+        function sendTooFastIsLastState (currentState) {
             if (currentState === lastState) {
                 return true;
             }
@@ -423,7 +441,7 @@ var main = function () {
             }
         };
 
-        var sendingTooFastLoop = function () {
+        function sendingTooFastLoop () {
 
             var diff = new Date().getTime() - antiGlobalTimekeeper[antiGlobalTimekeeper.length - 1];
             if (diff > sendingTooFastCooldown || isNaN(diff)) {
@@ -452,7 +470,7 @@ var main = function () {
         sendingTooFastInterval = setInterval(sendingTooFastLoop, 100);
     };
 
-    var removeSendingTooFastIndicator = function () {
+    function removeSendingTooFastIndicator () {
         if (!sendingTooFastIndicator)
             return;
 
@@ -461,7 +479,7 @@ var main = function () {
         sendingTooFastIndicator = false;
     };
 
-    var setShowSendingTooFast = function (newValue) {
+    function setShowSendingTooFast (newValue) {
         showSendingTooFastIndicator = newValue;
         window.localStorage.setItem("cttvShowSendTooFast", newValue.toString());
     };
@@ -470,7 +488,7 @@ var main = function () {
         createSendingTooFastIndicator();
 
     var autoSendToggle;
-    var createAutoSend = function () {
+    function createAutoSend () {
         if (!autoSendToggle) {
             autoSendToggle = $(
                 "<label><input type=checkbox title='Auto send messages' style='position: relative;" +
@@ -478,13 +496,13 @@ var main = function () {
                 .appendTo(chatSend.parent().children('.flex.flex-row'));
         }
     };
-    var removeAutoSend = function () {
+    function removeAutoSend () {
         if (autoSendToggle) {
             autoSendToggle.remove();
             autoSendToggle = false;
         }
     };
-    var setShowAutoSend = function (newValue) {
+    function setShowAutoSend (newValue) {
         showAutoSend = newValue;
         window.localStorage.setItem("cttvShowAutoSend", newValue.toString());
     };
@@ -510,7 +528,7 @@ var main = function () {
     });
 
 
-    var doAutoSend = function () {
+    function doAutoSend () {
         if (autoSendToggle) {
             if (autoSendToggle.children()[0].checked) {
                 debug("CTTV autosend: " + chatBox[0].value);
@@ -520,7 +538,7 @@ var main = function () {
         }
     };
 
-    var onChatBoxChange = function () {
+    function onChatBoxChange () {
         if (chatBox.val().length > 500) {
             chatBox.val(chatBox.val().slice(0, 500));
         }
@@ -538,14 +556,14 @@ var main = function () {
         onChatBoxChange();
     });
 
-    var setSelectedEmote = function (newEmote) {
+    function setSelectedEmote (newEmote) {
         cttvSelectedEmote = newEmote;
         window.localStorage.setItem("cttvSelectedEmote", cttvSelectedEmote);
     };
 
     // I have to hack together this on message solution for BTTV support,
     // as it intercepts the chat box entirely
-    var onSendMessage = function () {
+    function onSendMessage () {
         var splitStr = currentChatMessage.split(" ");
         var command = splitStr[0];
         var foundCommand = true;
@@ -570,7 +588,7 @@ var main = function () {
         debug("CTTV send");
     };
 
-    var onChatBoxKeyDown = function (e) {
+    function onChatBoxKeyDown (e) {
         var keyCode = e.which || e.keyCode;
         switch (keyCode) {
             case keycodes.TAB:
@@ -596,7 +614,7 @@ var main = function () {
     };
 
     // We brute-force rebind this function until we have a stable event handler.
-    var chatBoxOnKeyDown = function (e) {
+    function chatBoxOnKeyDown (e) {
         var keyCode = e.keycode || e.which;
         if (keyCode === keycodes.ENTER)
             onSendMessage();
@@ -650,7 +668,7 @@ var main = function () {
         ".chat-line__message > * { pointer-events: none!important; }</style>"
     );
 
-    var addChatOnClick = function () {
+    function addChatOnClick () {
         debug('chat onclick called');
         chatMessageArea.on('mousedown', function (e) {
             debug('chatclick triggered');
@@ -664,7 +682,7 @@ var main = function () {
         chatOnClickCssTag = onClickCss.appendTo(chatMessageArea);
     };
 
-    var chatMessageOnClick = function ($this, e, button) {
+    function chatMessageOnClick ($this, e, button) {
         if (button === 1 || button === 2) {
             var newMessage;
             newMessage = parseChat($this);
@@ -832,14 +850,14 @@ var main = function () {
         document.removeEventListener('keyup', dockeyup);
     });
 
-    var cleanupCtrlDown = function () {
+    function cleanupCtrlDown () {
         chatMessageArea.off("mousedown");
         if (chatOnClickCssTag) chatOnClickCssTag.remove();
         showHelpPopup(false);
         ctrlIsHeld = false;
     };
 
-    var showHelpPopup = function (show) {
+    function showHelpPopup (show) {
         if (showHelpPopupQuestionMark) {
             if (show) {
                 helpPopup.addClass('help-popup-cttv-visible');
@@ -860,7 +878,7 @@ var main = function () {
         helpText.on('click', function (e) {
             helpText.remove();
         });
-        var firstCtrl = function (e) {
+        function firstCtrl (e) {
             var keyCode = e.which || e.keyCode;
             if (keyCode === keycodes.CTRL) {
                 helpText.remove();
@@ -923,17 +941,17 @@ function debug(message) {
 }
 
 // Returns a value between 0 and 1
-var scaleNumber = function (num, min, max) {
+function scaleNumber (num, min, max) {
     return (num - min) / (max - min);
 };
 
 // Returns num between originalMin and originalMax scaled up to between scaledMin and scaledMax
-var scaleNumberRange = function (num, originalMin, originalMax, scaledMin, scaledMax) {
+function scaleNumberRange (num, originalMin, originalMax, scaledMin, scaledMax) {
     return scaleNumber(num, originalMin, originalMax) * (scaledMax - scaledMin) + scaledMin;
 };
 
 // Same as above but inverted (if num = scaledMax it returns scaledMin)
-var scaleNumberRangeInverse = function (num, originalMin, originalMax, scaledMin, scaledMax) {
+function scaleNumberRangeInverse (num, originalMin, originalMax, scaledMin, scaledMax) {
     return (1 - scaleNumber(num, originalMin, originalMax)) * (scaledMax - scaledMin) + scaledMin;
 };
 
