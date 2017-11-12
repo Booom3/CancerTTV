@@ -2,10 +2,8 @@
 {
     "editor.insertSpaces": false,
     "editor.formatOnType": true,
-	"jshint.enable": true,
 	"files.exclude": {
 		"**/.git": true,
 		"**/.DS_Store": true
-	},
-	"eslint.enable": false
+	}
 }

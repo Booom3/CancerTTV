@@ -1,0 +1,43 @@
+{
+    "env": {
+        "browser": true,
+        "jquery": true,
+        "webextensions": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "sourceType": "script"
+    },
+    "rules": {
+        "indent": [
+            "error",
+            4,
+            {
+                "SwitchCase": 1
+            }
+        ],
+        "quotes": [
+            "error",
+            "single",
+            { "allowTemplateLiterals": false }
+        ],
+        "semi": [
+            "error",
+            "always"
+        ],
+        "no-trailing-spaces": [
+            "error"
+        ],
+        "object-curly-newline": [
+            "error",
+            { 
+                "multiline": true
+            }
+        ],
+        "no-console": "warn",
+        "max-len": [
+            "warn",
+            80
+        ]
+    }
+}

@@ -95,3 +95,24 @@
 .stored-pasta-top.move-left {
 	right: calc(100% + 250px)
 }
+.global-limit-display {
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    bottom: calc(100% + 12px);
+    pointer-events: none;
+    text-shadow: 0 0 12px rgb(126, 126, 126);
+    transition: font-size .2s, color .2s;
+}
+.sending-too-fast-indicator {
+    position: absolute;
+    bottom: calc(100% + 30px);
+    pointer-events: none;
+    text-shadow: 0 0 12px rgb(126, 126, 126);
+    font-size: 60px;
+}
+.help-popup-message-cttv.help-popup-button-cttv {
+    margin: 0px;
+    background-color: rgb(117, 80, 186);
+    cursor: pointer; 
+}
