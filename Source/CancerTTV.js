@@ -24,11 +24,6 @@ var showHelpPopupQuestionMark = getBoolFromStorage("cttvShowQuestionMark", true)
 var showAutoSend = getBoolFromStorage("cttvShowAutoSend", true);
 var firstTime = getBoolFromStorage("cttvFirstTime", true);
 var enableStoredPastaKeys = getBoolFromStorage("cttvEnableStoredPastaKeys", true);
-var enablePauseChatOnCtrl = getBoolFromStorage("cttvEnablePauseChatOnCtrl", false);
-var setEnablePauseChatOnCtrl = function (newValue) {
-    enablePauseChatOnCtrl = newValue;
-    window.localStorage.setItem("cttvEnablePauseChatOnCtrl", newValue.toString());
-};
 
 var storedPasta = [];
 for (var i = 0; i < 10; i++) {
@@ -45,7 +40,6 @@ var chatBoxHasProgramChange = false;
 var lastMessage = "";
 var chatBoxRepeatSpamEndLength = 0;
 var ctrlIsHeld = false;
-var pauseChatFiller;
 var cleanupFunctions = [];
 var main = function () {
 
@@ -57,31 +51,6 @@ var main = function () {
     var chatArea = $('.chat__container');
     var chatBox = chatArea.find('div textarea');
     var chatSend = $('.chat-buttons-container [data-a-target="chat-send-button"]');
-
-    var cttvStyleTag = $(
-        "<style scoped type='text/css'>\n" +
-        ".hide-more-messages .more-messages-indicator { display: none; }" +
-        ".help-popup-cttv-visible { z-index: 9; left: -45px !important; opacity: 1 !important; pointer-events: auto !important; cursor: pointer;}\n" +
-        ".help-popup-cttv { text-align: center; vertical-align: middle; line-height: 22px;\n" +
-        "border-radius: 50%; position: absolute; left: 0px; bottom: 75px; width: 20px; height: 20px; opacity: 0;\n" +
-        "background-color: rgb(100, 65, 165); transition: opacity .3s, left .3s, transform .3s; pointer-events: none; }\n" +
-        ".help-popup-cttv:hover { box-shadow: 0px 0px 12px rgb(100, 65, 165); transform: scale(1.2); }\n" +
-        "" +
-        ".help-popup-top-cttv { position:absolute; right: 100%; bottom: 50px; float: right; z-index: 3;" +
-        "border: rgba(100, 100, 100, 0.5) solid 1px; background - color: rgb(37, 24, 61); width: 250px; height: 350px; }\n" +
-        "" +
-        ".help-popup-message-cttv { text-align: center; background-color: rgb(60, 60, 60); box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.15) inset;\n" +
-        "border-bottom: black solid 2px; padding: 8px 6px 10px 6px; color: rgb(211, 211, 211); display: block; }\n" +
-        ".help-popup-message-cttv:last-child { border-bottom: none; }\n" +
-        ".help-popup-message-cttv:first-child { box-shadow: none; }\n" +
-        ".help-popup-message-cttv:nth-child(2n) { background-color: rgb(40, 40, 40); }\n" +
-        ".help-popup-message-cttv textarea { width: 100%; height: 100%; margin: 0px; resize: none; }\n" +
-        "" +
-        ".kbd { padding: 0.1em 0.6em; border: 1px solid rgb(204, 204, 204); font-size: 11px; font-family: Arial,Helvetica,sans-serif;" +
-        "background-color: rgb(247, 247, 247); color: rgb(51, 51, 51); box-shadow: 0 1px 0px rgba(0, 0, 0, 0.2),0 0 0 2px rgb(255, 255, 255) inset;" +
-        "border-radius: 3px; display: inline-block; margin: 0 0.1em; text-shadow: 0 1px 0 rgb(255, 255, 255);" +
-        "line-height: 1.5; white-space: nowrap;}</style>")
-        .appendTo("head");
 
     var helpPopupDiv = function (addString) {
         return "<div class='help-popup-message-cttv' " + addString + ">";
@@ -132,14 +101,6 @@ var main = function () {
 
                 // These are created in reverse order.
                 // ¯\_(ツ)_/¯
-
-                // optionsDropdownChildren.push($("<label class='help-popup-message-cttv' style='margin: 0px;' " +
-                //     "title='Experimental feature, use at your own discretion.'>" +
-                //     "<input  type='checkbox' " + (enablePauseChatOnCtrl ? "checked" : "") + "/> Enable pausing chat on holding ctrl</label>")
-                //     .insertAfter(optionsDropdown)
-                //     .on('change', function (e) {
-                //         setEnablePauseChatOnCtrl(e.target.checked);
-                //     }));
 
                 optionsDropdownChildren.push($("<label class='help-popup-message-cttv' style='margin: 0px;'>" +
                     "<input  type='checkbox' " + (enableStoredPastaKeys ? "checked" : "") + "/> Enable stored pasta hotkeys</label>")
@@ -628,12 +589,6 @@ var main = function () {
                 if (!ctrlIsHeld) {
                     ctrlIsHeld = true;
                     addChatOnClick();
-                    if (enablePauseChatOnCtrl && $('.more-messages-indicator').length === 0) {
-                        var chatScroller = $('.chat-messages').find('.tse-scroll-content');
-                        pauseChatFiller = $("<div class=chat-line style='height: 1000px'></div>").appendTo(chatMessageArea);
-                        chatScroller.trigger('mousewheel');
-                        $('.chat-interface').addClass('hide-more-messages');
-                    }
                     showHelpPopup(true);
                 }
                 break;
@@ -882,12 +837,6 @@ var main = function () {
         if (chatOnClickCssTag) chatOnClickCssTag.remove();
         showHelpPopup(false);
         ctrlIsHeld = false;
-        if (pauseChatFiller) {
-            pauseChatFiller.remove();
-            pauseChatFiller = false;
-            $('.chat-messages').find('.tse-scroll-content').scrollTop(999999).trigger('mousewheel');
-            $('.chat-interface').removeClass('hide-more-messages');
-        }
     };
 
     var showHelpPopup = function (show) {

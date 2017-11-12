@@ -20,7 +20,10 @@
 				"jquery-2.2.1.min.js",
 				"simplebar.js",
 				"CancerTTV.js",
-				"CancerTTV-Activator.js"				
+				"CancerTTV-Activator.js"
+			],
+			"css": [
+				"CancerTTV.css"
 			]
 		}
 	]

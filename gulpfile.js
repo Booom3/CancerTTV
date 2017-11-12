@@ -20,13 +20,19 @@ gulp.task('scripts', ['lint'], function() {
 		.pipe(gulp.dest(ffExtLoc + '/Source'));
 });
 
-gulp.task('compresszipff', ['scripts'], function() {
+gulp.task('styles', function () {
+	return gulp.src('Source/*.css')
+		.pipe(gulp.dest(chromeExtLoc + '/Source'))
+		.pipe(gulp.dest(ffExtLoc + '/Source'));
+})
+
+gulp.task('compresszipff', ['scripts', 'styles'], function() {
 	return gulp.src(ffExtLoc + '/Source/*')
 		.pipe(zip('CancerTTV Firefox.xpi'))
 		.pipe(gulp.dest('Extensions/Firefox Extension'));
 });
 
-gulp.task('compresszipchrome', ['scripts'], function() {
+gulp.task('compresszipchrome', ['scripts', 'styles'], function() {
 	return gulp.src(chromeExtLoc + '/Source/*')
 		.pipe(zip('CancerTTV Chrome.zip'))
 		.pipe(gulp.dest(chromeExtLoc + ''));
@@ -74,7 +80,7 @@ gulp.task('bumpversionff', function() {
 });
 
 gulp.task('watch', function() {
-	gulp.watch('Source/*.js', ['lint', 'scripts']);
+	gulp.watch('Source/*', ['lint', 'styles', 'scripts']);
 });
 
 gulp.task('default', ['lint','scripts', 'compresszipff', 'compresszipchrome']);
