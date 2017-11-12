@@ -1,4 +1,3 @@
-console.log($);
 var s = document.createElement('script');
 s.src = chrome.extension.getURL('CancerTTV-Activator.js');
 s.onload = function() {

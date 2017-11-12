@@ -20,12 +20,8 @@
 				"jquery-2.2.1.min.js",
 				"simplebar.js",
 				"CancerTTV.js",
-				"Injector.js"
-			],
-			"run_at": "document_end"
+				"CancerTTV-Activator.js"				
+			]
 		}
-	],
-	"web_accessible_resources": [
-		"CancerTTV-Activator.js"
 	]
 }

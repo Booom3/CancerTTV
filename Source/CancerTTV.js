@@ -49,9 +49,9 @@ var pauseChatFiller;
 var cleanupFunctions = [];
 var main = function () {
 
-    console.log("CTTV Main called");
-    console.log($);
-    console.log($('.chat-list__lines'));
+    debug("CTTV Main called");
+    debug($);
+    debug($('.chat-list__lines'));
 
     var chatMessageArea = $('.chat-list__lines');
     var chatArea = $('.chat__container');
@@ -265,7 +265,7 @@ var main = function () {
 
         var cleanupStoredPasta = function () {
             storedPastaShown = false;
-            console.log("CTTV spt: " + storedPastaTop[0].style.right);
+            debug("CTTV spt: " + storedPastaTop[0].style.right);
             if (storedPastaTop[0].style.right !== "100%") {
                 storedPastaTop.css("z-index", "2").css("right", "100%");
                 openStoredPastaButton.find('.VVVVVV').text("◄◄");
@@ -540,7 +540,7 @@ var main = function () {
                 .on('click', function (e) {
                     showCttvMenu();
                 })).appendTo(chatSettings);
-            console.log('Menu appended');
+            debug('Menu appended');
             clearInterval(cttvShowMenuInterval);
         }
     }, 300);
@@ -552,7 +552,7 @@ var main = function () {
     var doAutoSend = function () {
         if (autoSendToggle) {
             if (autoSendToggle.children()[0].checked) {
-                console.log("CTTV autosend: " + chatBox[0].value);
+                debug("CTTV autosend: " + chatBox[0].value);
                 var newE = $.Event("keydown");
                 chatSend.trigger('click');
             }
@@ -606,7 +606,7 @@ var main = function () {
                 antiGlobalTimekeeper.push(tempTime);
             }
         }
-        console.log("CTTV send");
+        debug("CTTV send");
     };
 
     var onChatBoxKeyDown = function (e) {
@@ -653,7 +653,7 @@ var main = function () {
         if ($(e.target).data('a-target') === 'chat-send-button' ||
             $(e.target).parent().data('a-target') === 'chat-send-button')
         {
-            console.log("CTTV click: " + chatBox.val());
+            debug("CTTV click: " + chatBox.val());
             onSendMessage();
         }
     });
@@ -684,7 +684,7 @@ var main = function () {
                 return;
             }
         });
-        console.log(messagetext);
+        debug(messagetext);
         return messagetext;
     }
 
@@ -696,10 +696,10 @@ var main = function () {
     );
 
     var addChatOnClick = function () {
-        console.log('chat onclick called');
+        debug('chat onclick called');
         chatMessageArea.on('mousedown', function (e) {
-            console.log('chatclick triggered');
-            console.log(e.target);
+            debug('chatclick triggered');
+            debug(e.target);
             var button = e.which;
             var $target = $(e.target);
             if (!$target.hasClass('chat-line__message')) $target = $target.parents('.chat-line__message');
@@ -824,7 +824,7 @@ var main = function () {
                         break;
                     }
                     var storedNum = (keyCode === keycodes.KEY_0 ? 9 : keyCode - 49);
-                    console.log("CTTV: " + storedNum);
+                    debug("CTTV: " + storedNum);
                     if (e.shiftKey) {
                         setStoredPasta(storedNum, (chatBox.val() === "" ? lastMessage : chatBox.val()));
                         switchFocus = false;
@@ -964,6 +964,13 @@ function MessageModification(text) {
         }
         return this.text;
     };
+}
+
+// Logging
+function debug(message) {
+    if (devDebug) {
+        console.log(message);
+    }
 }
 
 // Returns a value between 0 and 1
