@@ -285,24 +285,26 @@ function createSendingTooFastIndicator () {
                 if (sendTooFastIsLastState(3))
                     return;
 
-                $sendingTooFastIndicator.css('opacity', '0');
+                $sendingTooFastIndicator
+                    .removeClass('red green');
             }
             else {
                 if (sendTooFastIsLastState(2))
                     return;
 
-                $sendingTooFastIndicator.text('O');
                 $sendingTooFastIndicator
-                    .css('color', 'green')
-                    .css('opacity', '1');
+                    .text('O')
+                    .removeClass('red')
+                    .addClass('green');
             }
         }
         else {
             if (sendTooFastIsLastState(1))
                 return;
 
-            $sendingTooFastIndicator.text('X');
-            $sendingTooFastIndicator.css('color', 'red').css('opacity', '1');
+            $sendingTooFastIndicator
+                .text('X')
+                .addClass('red');
         }
     }
     sendingTooFastInterval = setInterval(sendingTooFastLoop, 100);

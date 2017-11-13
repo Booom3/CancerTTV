@@ -87,6 +87,7 @@
 	cursor: pointer;
 	color: red;
 }
+
 .stored-pasta-top {
 	right: 100%;
 	transition: right 0.3s;
@@ -98,6 +99,7 @@
 .stored-pasta-top.on-top {
     z-index: 4;
 }
+
 .global-limit-display {
     position: absolute;
     text-align: center;
@@ -107,13 +109,24 @@
     text-shadow: 0 0 12px rgb(126, 126, 126);
     transition: font-size .2s, color .2s;
 }
+
 .sending-too-fast-indicator {
     position: absolute;
     bottom: calc(100% + 30px);
     pointer-events: none;
     text-shadow: 0 0 12px rgb(126, 126, 126);
     font-size: 60px;
+    opacity: 0;
 }
+.sending-too-fast-indicator.green {
+    color: green;
+    opacity: 1;
+}
+.sending-too-fast-indicator.red {
+    color: red;
+    opacity: 1;
+}
+
 .help-popup-message-cttv.help-popup-button-cttv {
     margin: 0px;
     background-color: rgb(117, 80, 186);
