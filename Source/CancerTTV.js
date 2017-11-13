@@ -518,52 +518,87 @@ function toggleCttvMenu () {
 
     var hints = [];
 
-    hints.push($(helpPopupDiv(
-        'title="Or middle click to copy their name too!"') +
+    hints.push($(
+        helpPopupDiv(
+            'title="Or middle click to copy their name too!"'
+        ) +
         getKbd('Ctrl') + '<br>Hold down and left click any message to copy ' +
         'it to your chatbox!</div>')
         .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv(
-        'title="Attaches a random squiggly at the end to bypass twitch spam ' +
-        'filters."') + getKbd('Ctrl', 'O') +
+    hints.push($(
+        helpPopupDiv(
+            'title="Attaches a random squiggly at the end to bypass twitch ' +
+            'spam filters."'
+        ) +
+        getKbd('Ctrl', 'O') +
         '<br>Sends your previous message again!</div>')
         .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv(
-        'title="Current chatbox message. If it&#39;s empty, ' +
-        'last message sent.&#10;"') +
+    hints.push($(
+        helpPopupDiv(
+            'title="Current chatbox message. If it&#39;s empty, ' +
+            'last message sent.&#10;"'
+        ) +
         getKbd('Ctrl', 'Shift', '1-9') +
         '<br>Store the chatbox text.</div>')
         .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv(
-        'title="Inserts the stored emote between all spaces in the current chat box text.&#10;' +
-        'Uses your stored emote defined in options."') + 'Test Message Test<br>' + getKbd('Ctrl', 'K') +
-        '<br>' + kappaImage + ' Test ' + kappaImage + ' Message ' + kappaImage + ' Test ' + kappaImage + '</div>')
+    hints.push($(
+        helpPopupDiv(
+            'title="Inserts the stored emote between all spaces in the ' +
+            'vurrent chat box text.&#10;Uses your stored emote defined ' +
+            'in options."'
+        ) +
+        'Test Message Test<br>' + getKbd('Ctrl', 'K') + '<br>' + kappaImage +
+        ' Test ' + kappaImage + ' Message ' + kappaImage + ' Test ' +
+        kappaImage + '</div>')
         .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv(
-        'title="Inserts the stored emote at the beginning and end of the current chat box text.&#10;' +
-        'Uses your stored emote defined in options."') + 'Test Message Test<br>' + getKbd('Ctrl', 'I') + '<br>' +
+    hints.push($(
+        helpPopupDiv(
+            'title="Inserts the stored emote at the beginning and end of ' +
+            'the current chat box text.&#10;Uses your stored emote defined ' +
+            'in options."'
+        ) +
+        'Test Message Test<br>' + getKbd('Ctrl', 'I') + '<br>' +
         kappaImage + ' Test Message Test ' + kappaImage + '</div>')
         .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv(
-        'title="Repeats the current chat box message in a nice, convenient way."') + kappaImage +
-        ' Test Message Test ' + kappaImage + '<br>' + getKbd('Ctrl', 'L') + '<br>' +
-        kappaImage + ' Test Message Test ' + kappaImage + ' Test Message Test ' + kappaImage + '</div>')
+    hints.push($(
+        helpPopupDiv(
+            'title="Repeats the current chat box message in a nice, ' +
+            'convenient way."'
+        ) +
+        kappaImage + ' Test Message Test ' + kappaImage + '<br>' +
+        getKbd('Ctrl', 'L') + '<br>' + kappaImage + ' Test Message Test ' +
+        kappaImage + ' Test Message Test ' + kappaImage + '</div>')
         .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv('title="Inserts the first word of the chat box betwen all spaces."') + kappaImage + ' ' +
-        'Test Message Test<br>' + getKbd('Ctrl', 'J') + '<br>' +
-        kappaImage + ' Test ' + kappaImage + ' Message ' + kappaImage + ' Test ' + kappaImage + '</div>').appendTo($menuArea));
+    hints.push($(
+        helpPopupDiv(
+            'title="Inserts the first word of the chat box betwen all spaces."'
+        ) +
+        kappaImage + ' ' + 'Test Message Test<br>' + getKbd('Ctrl', 'J') +
+        '<br>' + kappaImage + ' Test ' + kappaImage + ' Message ' +
+        kappaImage + ' Test ' + kappaImage + '</div>')
+        .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv('title="Inserts the first word of the chat box at the end."') + kappaImage + ' Test Message Test<br>' +
-        getKbd('Ctrl', 'U') + '<br>' + kappaImage + ' Test Message Test ' + kappaImage + '</div>').appendTo($menuArea));
+    hints.push($(
+        helpPopupDiv(
+            'title="Inserts the first word of the chat box at the end."'
+        ) +
+        kappaImage + ' Test Message Test<br>' + getKbd('Ctrl', 'U') + '<br>' +
+        kappaImage + ' Test Message Test ' + kappaImage + '</div>')
+        .appendTo($menuArea));
 
-    hints.push($(helpPopupDiv('title="Inserts a space between every character in the chat box."') + 'TESTMESSAGE<br>' +
-        getKbd('Ctrl', 'SPACE') + '<br>T E S T M E S S A G E</div>').appendTo($menuArea));
+    hints.push($(
+        helpPopupDiv(
+            'title="Inserts a space between every character in the chat box."'
+        ) +
+        'TESTMESSAGE<br>' + getKbd('Ctrl', 'SPACE') +
+        '<br>T E S T M E S S A G E</div>')
+        .appendTo($menuArea));
 
     hints.forEach(function (el) {
         el.on('click', function () {
@@ -664,7 +699,10 @@ function main () {
             chatBoxRepeatSpamEndLength = 0;
         }
         chatBoxHasProgramChange = false;
-        var inputEvent = new CustomEvent('input', { bubbles: true, detail: 'cttv' });
+        var inputEvent = new CustomEvent('input', {
+            bubbles: true,
+            detail: 'cttv'
+        });
         $chatBox[0].dispatchEvent(inputEvent);
     }
 
@@ -725,6 +763,8 @@ function main () {
         }
     }
 
+    // TODO: Two old comments below, investigate if this is still necessary
+
     // We brute-force rebind this function until we have a stable event handler.
     function chatBoxOnKeyDown (e) {
         var keyCode = e.keycode || e.which;
@@ -733,7 +773,8 @@ function main () {
     }
     $chatBox.on('keydown', chatBoxOnKeyDown);
 
-    // Instead of hooking the button, which BTTV eats, we hook the chat area. \o/
+    // Instead of hooking the button, which BTTV eats,
+    // we hook the chat area.\o /
     $chatArea.on('click', function (e) {
         if ($(e.target).data('a-target') === 'chat-send-button' ||
             $(e.target).parent().data('a-target') === 'chat-send-button')
@@ -743,23 +784,91 @@ function main () {
         }
     });
 
+    // Your regular Twitch message is constructed something like this:
+    //
+    // // This first div has a style tag applied to it in case it is
+    // // a /me message, the only style is color: <users colors>
+    //  div .chat-line-message data-a-target="chat-line-message"
+    //      span // This contains badges if applicable, otherwise empty
+    //      |   div data-a-target="chat-badge"
+    //      |       a || img    // Either a link in the case the badge links
+    //      |                   // somewhere, or just the badge image
+    //      |                   // If a, the a contains an img
+    //      a
+    //      |   span
+    //      |       span .chat-author__display-name
+    //      |            data-a-target="chat-message-username"
+    //      span    // This span contains a : in normal messages
+    //              // and nothing in case of /me messages
+    //
+    // // From here on out it all depends on the message contents
+    // //
+    // // This is what normal text looks like:
+    //  span data-a-target="chat-message-text"
+    //      "Users chat message" // Regular text node
+    //
+    // // This is what an emote looks like:
+    //  div data-a-target="emote-name"
+    //      img .chat-line__message--emote alt=<text used to write the emote>
+    //
+    // // Now BTTV does it its own way, and this is how it works as of
+    // // 2017/11/13.
+    // // If a BTTV emote is used in a message, it will create its own span
+    // // that looks just like a regular chat mesage span.
+    // // That is, a span like this:
+    // // <span data-a-target="chat-message-text">
+    // // But inside this it will create another span instead of text.
+    // // And inside that will be another span with .balloon-wrapper
+    // // And finally inside that will be the img for the emote along with some
+    // // balloon tooltip elements.
+    // // But it doesn't stop there. If the preceding, or following, element is
+    // // a regular text span, or another BTTV emote, this will,
+    // // for some reason, get absorbed into the BTTV span. The one inside
+    // // the regular chat message.
+    // // So let's say a user types the following: "GET LuL REKT LuL"
+    // // The following chat message will look like this:
+    //  span data-a-target="chat-message-text"
+    //      span
+    //          "GET"   // Text node directly under span, not wrapped in any
+    //          |       // element
+    //          span .balloon-wrapper
+    //          |   img alt="LuL" .bttv
+    //          "REKT"  // Again, text node.
+    //          span .balloon-wrapper
+    //              img alt="LuL" .bttv
+    //
+    // // And it will keep doing this until it encounters a regular emote
+    // // from Twitch itself. Like Kappa. When that happens, Kappa will get
+    // // its own regular emote tag right below the BTTV chat message element.
+    // // The best way I know of right now to check for BTTV nodes is to
+    // // check if any of the chat message element's descendants have a
+    // // .bttv or .bttv-channel class applied to them.
+
     function parseChat($element) {
         var messagetext = '';
+
+        // First we parse all the immediate children of the message div
         $.each($element.children(), function (i, val) {
             var $val = $(val);
             if ($val.data('a-target') === 'emote-name') {
                 messagetext += $val.find('img').attr('alt'); return;
-            } else if ($val.data('a-target') === 'chat-message-text' ||
-                $val.data('a-target') === 'chat-message-mention') {
+            }
+            else if ($val.data('a-target') === 'chat-message-text' ||
+                $val.data('a-target') === 'chat-message-mention')
+            {
                 if ($val.find('.bttv, .bttv-channel').length !== 0) {
                     var $nodes = $val.children().contents();
                     $.each($nodes, function (j, bttvnode) {
                         if (bttvnode.nodeType === 3) {
-                            messagetext += $(bttvnode).text().replace(/\n */g, '');
+                            messagetext += $(bttvnode)
+                                .text()
+                                .replace(/\n */g, '');
                             return;
                         }
 
-                        messagetext += $(bttvnode).find('img').attr('alt');
+                        messagetext += $(bttvnode)
+                            .find('img')
+                            .attr('alt');
                         messagetext += ' ';
                     });
                 } else {
@@ -774,9 +883,12 @@ function main () {
 
     var chatOnClickCssTag;
     var onClickCss = $(
-        '<style scoped type="text/css">.chat-line { cursor: pointer !important; } \n' +
-        '.chat-line__message:hover { background-color: rgb(126, 126, 126) !important; } \n' +
-        '.chat-line__message > * { pointer-events: none!important; }</style>'
+        '<style scoped type="text/css">' +
+        '.chat-line { cursor: pointer !important; } \n' +
+        '.chat-line__message:hover { ' +
+        'background-color: rgb(126, 126, 126) !important; } \n' +
+        '.chat-line__message > * { pointer-events: none!important; }' +
+        '</style>'
     );
 
     function addChatOnClick () {
@@ -786,7 +898,8 @@ function main () {
             debug(e.target);
             var button = e.which;
             var $target = $(e.target);
-            if (!$target.hasClass('chat-line__message')) $target = $target.parents('.chat-line__message');
+            if (!$target.hasClass('chat-line__message'))
+                $target = $target.parents('.chat-line__message');
             e.preventDefault();
             chatMessageOnClick($target, e, button);
         });
@@ -798,7 +911,13 @@ function main () {
             var newMessage;
             newMessage = parseChat($this);
             if (button === 2) {
-                newMessage = newMessage.insertAt(0, $this.find('.chat-author__display-name').text() + ': ');
+                newMessage = newMessage
+                    .insertAt(
+                        0,
+                        $this
+                            .find('.chat-author__display-name')
+                            .text() + ': '
+                    );
             }
             var isSlashMeme = $this.attr('style');
             if (isSlashMeme !== undefined) {
@@ -815,7 +934,9 @@ function main () {
         var keyCode = e.keyCode || e.which;
         var switchFocus = false;
 
-        if (e.ctrlKey && !e.altKey /*Alt gr is just alt+ctrl*/ && keyCode !== keycodes.CTRL) {
+        if (e.ctrlKey && !e.altKey /*Alt gr is just alt+ctrl*/ &&
+            keyCode !== keycodes.CTRL)
+        {
             switchFocus = true;
             var autoSend = false;
             var keyNumber = false;
@@ -835,16 +956,20 @@ function main () {
                     break;
 
                 case keycodes.KEY_O:
-                    // Repeat last message with a cycling squiggly at the end to avoid the same message cooldown
+                    // Repeat last message with a cycling squiggly at the end
+                    // to avoid the same message cooldown
 
-                    // Set current chat message manually in case something was entered between spamming
+                    // Set current chat message manually in case something was
+                    // entered between spamming
                     currentChatMessage = lastMessage;
 
                     mMod.disableCleanup = true;
                     repeatSpamIndex++;
                     mMod.text = lastMessage;
                     if (antiGlobalTimekeeper.length !== 0) {
-                        mMod.text += ' ' + repeatSpamArr[repeatSpamIndex % repeatSpamArr.length];
+                        mMod.text += ' ' +
+                            repeatSpamArr[
+                                repeatSpamIndex % repeatSpamArr.length];
                         chatBoxRepeatSpamEndLength = 2;
                         chatBoxHasProgramChange = true;
                     }
@@ -852,18 +977,26 @@ function main () {
                     break;
 
                 case keycodes.KEY_K:
-                    // Surround the message with the stored emote and replace all spaces with it
-                    mMod.text = cttvSelectedEmote + ' ' + mMod.text.replace(regExSpaces, ' ' + cttvSelectedEmote + ' ') +
+                    // Surround the message with the stored emote and replace
+                    // all spaces with it
+                    mMod.text =
+                        cttvSelectedEmote + ' ' +
+                        mMod.text.replace(
+                            regExSpaces,
+                            ' ' + cttvSelectedEmote + ' '
+                        ) +
                         ' ' + cttvSelectedEmote;
                     break;
 
                 case keycodes.KEY_I:
                     // Surround the message with the stored emote
-                    mMod.text = cttvSelectedEmote + ' ' + mMod.text + ' ' + cttvSelectedEmote;
+                    mMod.text = cttvSelectedEmote + ' ' +
+                        mMod.text + ' ' + cttvSelectedEmote;
                     break;
 
                 case keycodes.KEY_L:
-                    // Remove the last word, repeat the message, then insert the last word at the end
+                    // Remove the last word, repeat the message, then insert
+                    // the last word at the end
                     tempText = mMod.text.split(' ');
                     tempLast = tempText.pop();
                     tempText = tempText.concat(tempText);
@@ -872,16 +1005,19 @@ function main () {
                     break;
 
                 case keycodes.KEY_J:
-                    // Take the first word in message and insert it in every space + start and end
+                    // Take the first word in message and insert it in every
+                    // space + start and end
                     tempText = mMod.text.split(' ');
                     tempEmote = tempText.shift();
                     tempText = tempText.join(' ');
-                    mMod.text = tempEmote + ' ' + tempText.replace(regExSpaces, ' ' + tempEmote + ' ') +
+                    mMod.text = tempEmote + ' ' +
+                        tempText.replace(regExSpaces, ' ' + tempEmote + ' ') +
                         ' ' + tempEmote;
                     break;
 
                 case keycodes.KEY_U:
-                    // Take the first word in message and insert it in start and end
+                    // Take the first word in message and insert it in start
+                    // and end
                     tempText = mMod.text.split(' ');
                     tempText.push(tempText[0]);
                     mMod.text = tempText.join(' ');
@@ -907,10 +1043,16 @@ function main () {
                         switchFocus = false;
                         break;
                     }
-                    var storedNum = (keyCode === keycodes.KEY_0 ? 9 : keyCode - 49);
+                    var storedNum =
+                        (keyCode === keycodes.KEY_0 ? 9 : keyCode - 49);
                     debug('CTTV: ' + storedNum);
                     if (e.shiftKey) {
-                        setStoredPasta(storedNum, ($chatBox.val() === '' ? lastMessage : $chatBox.val()));
+                        setStoredPasta(
+                            storedNum,
+                            ($chatBox.val() === '' ?
+                                lastMessage :
+                                $chatBox.val())
+                        );
                         switchFocus = false;
                         e.preventDefault();
                         break;
@@ -990,12 +1132,10 @@ function main () {
     }
 
     if (firstTime || devDebug) {
-        var helpText = $('<div style="z-index: 99999; display: flex; justify-content: center; align-items: center; position: absolute; top: 0px;' +
-            'left: 0px; width: 100%; height: 100%; text-align: center; white-space: nowrap; background-color: rgba(203, 203, 203, 0.4);' +
-            'box-shadow: 0px 0px 12px rgba(203, 203, 203, 0.4);">' +
-            '<span style="vertical-align: middle; text-shadow: rgb(180, 0, 255) 0px 0px 15px; color: rgb(255, 255, 255); font-size: 25px;' +
-            'margin-left: -100%; margin-right: -100%;">' +
-            'Hold CTRL for Cancer</span></div>').appendTo($chatBox.parent());
+        var helpText = $(
+            '<div id="first-time-cttv">' +
+            '<span> Hold CTRL for Cancer</span></div>')
+            .appendTo($chatBox.parent());
         helpText.on('click', function () {
             helpText.remove();
         });
@@ -1060,14 +1200,21 @@ function scaleNumber (num, min, max) {
     return (num - min) / (max - min);
 }
 
-// Returns num between originalMin and originalMax scaled up to between scaledMin and scaledMax
-function scaleNumberRange (num, originalMin, originalMax, scaledMin, scaledMax) {
-    return scaleNumber(num, originalMin, originalMax) * (scaledMax - scaledMin) + scaledMin;
+// Returns num between originalMin and originalMax scaled up to between
+// scaledMin and scaledMax
+function scaleNumberRange(num, originalMin, originalMax,
+    scaledMin, scaledMax)
+{
+    return scaleNumber(num, originalMin, originalMax) *
+        (scaledMax - scaledMin) + scaledMin;
 }
 
 // Same as above but inverted (if num = scaledMax it returns scaledMin)
-function scaleNumberRangeInverse (num, originalMin, originalMax, scaledMin, scaledMax) {
-    return (1 - scaleNumber(num, originalMin, originalMax)) * (scaledMax - scaledMin) + scaledMin;
+function scaleNumberRangeInverse(num, originalMin, originalMax,
+    scaledMin, scaledMax)
+{
+    return (1 - scaleNumber(num, originalMin, originalMax)) *
+        (scaledMax - scaledMin) + scaledMin;
 }
 
 // Thank you stack overflow
@@ -1075,7 +1222,9 @@ String.prototype.insertAt = function (index, string) {
     return this.substr(0, index) + string + this.substr(index);
 };
 function rgb(r, g, b) {
-    return 'rgb(' + Math.floor(r) + ',' + Math.floor(g) + ',' + Math.floor(b) + ')';
+    return 'rgb(' + Math.floor(r) + ',' +
+        Math.floor(g) + ',' +
+        Math.floor(b) + ')';
 }
 
 // Thank you guy in google search results for this
