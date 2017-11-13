@@ -199,7 +199,8 @@ function createGlobalLimitDisplay () {
     if ($globalLimitDisplay)
         return;
 
-    $globalLimitDisplay = $('<p class="global-limit-display">Test</p>')
+    $globalLimitDisplay = $(
+        '<p class="global-limit-display">Test</p>')
         .appendTo($chatBox.parent());
 
     var lastLen = -1;
@@ -223,10 +224,11 @@ function createGlobalLimitDisplay () {
         var gbInverseScaler = scaleNumberRangeInverse(
             Math.min(gtlen, 17), 0, 17,
             0, 126);
-        $globalLimitDisplay.css('font-size', (textScaler) + 'px')
-            .css('color', rgb(colorScaler, gbInverseScaler, gbInverseScaler));
-        $globalLimitDisplay.css('opacity', (gtlen < 3 ? 0 : 1));
-        $globalLimitDisplay.text(gtlen === antiGlobalMessageLimit ? 'MAX' : gtlen);
+        $globalLimitDisplay
+            .css('font-size', (textScaler) + 'px')
+            .css('color', rgb(colorScaler, gbInverseScaler, gbInverseScaler))
+            .css('opacity', (gtlen < 3 ? 0 : 1))
+            .text(gtlen === antiGlobalMessageLimit ? 'MAX' : gtlen);
 
     }
 
@@ -977,7 +979,17 @@ function main () {
         }
     }
 
-    if (firstTime) {
+    function firstCtrl (e) {
+        var keyCode = e.which || e.keyCode;
+        if (keyCode === keycodes.CTRL) {
+            helpText.remove();
+            firstTime = false;
+            window.localStorage.setItem('cttvFirstTime', 'false');
+            document.removeEventListener('keydown', firstCtrl);
+        }
+    }
+
+    if (firstTime || devDebug) {
         var helpText = $('<div style="z-index: 99999; display: flex; justify-content: center; align-items: center; position: absolute; top: 0px;' +
             'left: 0px; width: 100%; height: 100%; text-align: center; white-space: nowrap; background-color: rgba(203, 203, 203, 0.4);' +
             'box-shadow: 0px 0px 12px rgba(203, 203, 203, 0.4);">' +
@@ -987,15 +999,6 @@ function main () {
         helpText.on('click', function () {
             helpText.remove();
         });
-        function firstCtrl (e) {
-            var keyCode = e.which || e.keyCode;
-            if (keyCode === keycodes.CTRL) {
-                helpText.remove();
-                firstTime = false;
-                window.localStorage.setItem('cttvFirstTime', 'false');
-                document.removeEventListener('keydown', firstCtrl);
-            }
-        }
         document.addEventListener('keydown', firstCtrl);
         cleanupFunctionsOneTime.push(function () {
             document.removeEventListener('keydown', firstCtrl);

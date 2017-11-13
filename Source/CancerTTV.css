@@ -108,6 +108,7 @@
     pointer-events: none;
     text-shadow: 0 0 12px rgb(126, 126, 126);
     transition: font-size .2s, color .2s;
+    opacity: 0;
 }
 
 .sending-too-fast-indicator {

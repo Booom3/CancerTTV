@@ -4,6 +4,9 @@
         "jquery": true,
         "webextensions": true
     },
+    "globals": {
+        "SimpleBar": true
+    },
     "extends": "eslint:recommended",
     "parserOptions": {
         "sourceType": "script"
