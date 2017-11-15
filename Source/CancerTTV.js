@@ -938,8 +938,16 @@ function main () {
     function parseChat($element) {
         var messagetext = '';
 
+        // Workaround for FrankerFaceZ as it wraps all the messages inside
+        // a <span class="message">
+        var $ffz = $element.children('.message'), $children;
+        if ($ffz.length === 0)
+            $children = $element.children();
+        else
+            $children = $ffz.children();
+        
         // First we parse all the immediate children of the message div
-        $.each($element.children(), function (i, val) {
+        $.each($children, function (i, val) {
             var $val = $(val);
             if ($val.data('a-target') === 'emote-name') {
                 messagetext += $val.find('img').attr('alt'); return;
@@ -966,6 +974,10 @@ function main () {
                     messagetext += $val.text();
                 }
                 return;
+            }
+            // FFZ Wraps emotes differently
+            else if ($val.hasClass('chat-line__message--emote')) {
+                messagetext += $val.attr('alt');
             }
         });
         debug(messagetext);
