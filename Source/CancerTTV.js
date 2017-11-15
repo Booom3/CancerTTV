@@ -1,15 +1,15 @@
 // Constants
 var regExSpaces = / +/g;
-var antiGlobalTimeLimit = 31;
+var antiGlobalMessageTimeLimit = 31;
 var antiGlobalMessageLimit = 20;
-var antiGlobalDisplaySizeMin = 12;
-var antiGlobalDisplaySizeMax = 72;
+var antiGlobalMessageLimitIndicatorSizeMin = 12;
+var antiGlobalMessageLimitIndicatorSizeMax = 72;
 var repeatSpamArr = [',', '.', '-', '"', '_', ':', ';'];
 var sendingTooFastCooldown = 1000;
 
 // Variables
 var currentChatMessage = '';
-var antiGlobalTimekeeper = [];
+var antiGlobalMessageLimitTimekeeper = [];
 var repeatSpamIndex = 0;
 var chatBoxHasProgramChange = false;
 var lastMessage = '';
@@ -22,7 +22,7 @@ var cleanupFunctions = [];
 var $chatSend, $chatMessageArea, $chatArea, $chatBox;
 
 // CTTV Elements
-var $helpPopup, $globalLimitDisplay, $menuAreaTop, $storedPastaTop;
+var $helpPopup, $globalMessageLimitIndicator, $menuAreaTop, $storedPastaTop;
 
 // Storage helpers
 function getBoolFromStorage (varName, defaultCase) {
@@ -36,8 +36,12 @@ var cttvSelectedEmote =
     window.localStorage.getItem('cttvSelectedEmote') || 'Kappa';
 var showSendingTooFastIndicator =
     getBoolFromStorage('cttvShowSendTooFast', true);
+var scaleSendingTooFastIndicator =
+    window.localStorage.getItem('cttvScaleSendTooFast') || '100';
 var showGlobalMessageLimitCounter =
     getBoolFromStorage('cttvShowGlobalMessageLimit', true);
+var scaleGlobalMessageLimitIndicator =
+    window.localStorage.getItem('cttvScaleGlobalMessageLimit') || '100';
 var showHelpPopupQuestionMark =
     getBoolFromStorage('cttvShowQuestionMark', true);
 var showAutoSend =
@@ -65,91 +69,159 @@ function helpPopupLabel(addString) {
     return '<label class="help-popup-message-cttv" ' + addString + '>';
 }
 
-var optionsMenuContents = [
-    $(
-        helpPopupLabel() +
-        '<input  type="checkbox" ' + (enableStoredPastaKeys ? 'checked' : '') +
-        '/> Enable stored pasta hotkeys</label>'
-    )
-        .on('change', function (e) {
-            setEnableStoredPastaKeys(e.target.checked);
-        })
-    ,
+var optionsMenuContents = [];
 
-    $(
-        helpPopupLabel(
-            'title="It doesn&#39;t have to be just an emote.&#10;' +
-            'Any characters are allowed, including spaces."'
-        ) +
-        'Stored emote<br><input type="textarea" value="' + cttvSelectedEmote +
-        '" style="width: 90%;"/></label>'
-    )
-        .on('keyup', function (e) {
-            setSelectedEmote(e.target.value);
-        })
-    ,
+// Stored Pasta options menu
 
-    $(
-        helpPopupLabel() +
-        '<input  type="checkbox" ' + (showAutoSend ? 'checked' : '') +
-        '/> Show auto send checkbox</label></div>'
-    )
-        .on('change', function (e) {
-            setShowAutoSend(e.target.checked);
-            if (showAutoSend)
-                createAutoSend();
-            else
-                removeAutoSend();
-        })
-    ,
+var $optionsMenuStoredPasta = $(
+    helpPopupDiv()
+);
+optionsMenuContents.push($optionsMenuStoredPasta);
+$(
+    '<label><input  type="checkbox" ' +
+    (enableStoredPastaKeys ? 'checked' : '') +
+    '/> Enable stored pasta hotkeys</label>'
+)
+    .on('change', function (e) {
+        setEnableStoredPastaKeys(e.target.checked);
+    })
+    .appendTo($optionsMenuStoredPasta);
 
-    $(
-        helpPopupLabel() +
-        '<input  type="checkbox" ' +
-        (showSendingTooFastIndicator ? 'checked' : '') +
-        '/> Show sending messages too fast</label>'
-    )
-        .on('change', function (e) {
-            setShowSendingTooFast(e.target.checked);
-            if (showSendingTooFastIndicator)
-                createSendingTooFastIndicator();
-            else
-                removeSendingTooFastIndicator();
-        })
-    ,
+// Selected Emote options menu
 
-    $(
-        helpPopupLabel() +
-        '<input  type="checkbox" ' +
-        (showGlobalMessageLimitCounter ? 'checked' : '') +
-        '/> Show global message limit</label>'
+var $optionsMenuSelectedEmote = $(
+    helpPopupDiv(
+        'title="It doesn&#39;t have to be just an emote.&#10;' +
+        'Any characters are allowed, including spaces."'
     )
-        .on('change', function (e) {
-            setShowGlobalLimitDisplay(e.target.checked);
-            if (showGlobalMessageLimitCounter)
-                createGlobalLimitDisplay();
-            else
-                removeGlobalLimitDisplay();
-        })
-    ,
+);
+optionsMenuContents.push($optionsMenuSelectedEmote);
+$(
+    '<label>Stored emote<br><input type="textarea" value="' +
+    cttvSelectedEmote + '" style="width: 90%;"/></label>'
+)
+    .on('keyup', function (e) {
+        setSelectedEmote(e.target.value);
+    })
+    .appendTo($optionsMenuSelectedEmote);
 
-    $(
-        helpPopupLabel() +
-        '<input  type="checkbox" ' +
-        (showHelpPopupQuestionMark ? 'checked' : '') +
-        ' /> Show question mark</label>'
-    )
-        .on('change', function (e) {
-            setShowHelpPopup(e.target.checked);
-            if (!showHelpPopupQuestionMark) {
-                removeHelpPopup();
-            }
-            else {
-                createHelpPopup();
-                $helpPopup.css('display', 'none');
-            }
-        })
-];
+// Auto Send options menu
+
+var $optionsMenuAutoSend = $(
+    helpPopupLabel()
+);
+optionsMenuContents.push($optionsMenuAutoSend);
+$(
+    '<input  type="checkbox" ' + (showAutoSend ? 'checked' : '') +
+    '/> Show auto send checkbox</label></div>'
+)
+    .on('change', function (e) {
+        setShowAutoSend(e.target.checked);
+        if (showAutoSend)
+            createAutoSend();
+        else
+            removeAutoSend();
+    })
+    .appendTo($optionsMenuAutoSend);
+
+// Sending Too Fast options menu
+
+var $optionsMenuSendingTooFast = $(
+    helpPopupLabel()
+);
+optionsMenuContents.push($optionsMenuSendingTooFast);
+$(
+    '<label><input  type="checkbox" ' +
+    (showSendingTooFastIndicator ? 'checked' : '') +
+    '/> Show sending messages too fast</label>'
+)
+    .on('change', function (e) {
+        setShowSendingTooFast(e.target.checked);
+        if (showSendingTooFastIndicator)
+            createSendingTooFastIndicator();
+        else
+            removeSendingTooFastIndicator();
+    })
+    .appendTo($optionsMenuSendingTooFast);
+
+$(
+    '<div>Set indicator scale</div>'
+)
+    .appendTo($optionsMenuSendingTooFast);
+
+$(
+    '<input class="option-slider-cttv" type="range" min="10" max="200" ' +
+    'value="' + scaleSendingTooFastIndicator + '">'
+)
+    .on('input', function () {
+        setScaleSendingTooFast(this.value);
+        if ($sendingTooFastIndicator) {
+            $sendingTooFastIndicator
+                .css('transform', 'scale(' + this.value / 100 + ')');
+        }
+    })
+    .appendTo($optionsMenuSendingTooFast);
+
+// Global Limit options menu
+
+var $optionsMenuGlobalLimit = $(
+    helpPopupDiv()
+);
+optionsMenuContents.push($optionsMenuGlobalLimit);
+$(
+    '<label><input  type="checkbox" ' +
+    (showGlobalMessageLimitCounter ? 'checked' : '') +
+    '/> Show global message limit</label>'
+)
+    .on('change', function (e) {
+        setShowGlobalMessageLimitIndicator(e.target.checked);
+        if (showGlobalMessageLimitCounter)
+            createGlobalMessageLimitIndicator();
+        else
+            removeGlobalMessageLimitIndicator();
+    })
+    .appendTo($optionsMenuGlobalLimit);
+
+$(
+    '<div>Set indicator scale</div>'
+)
+    .appendTo($optionsMenuGlobalLimit);
+
+$(
+    '<input class="option-slider-cttv" type="range" min="10" max="200" ' +
+    'value="' + scaleGlobalMessageLimitIndicator + '">'
+)
+    .on('input', function () {
+        setScaleGlobalMessageLimitIndicator(this.value);
+        if ($globalMessageLimitIndicator) {
+            $globalMessageLimitIndicator
+                .css('transform', 'scale(' + this.value / 100 + ')');
+        }
+    })
+    .appendTo($optionsMenuGlobalLimit);
+
+// Question Mark options menu
+
+var $optionsMenuQuestionMark = $(
+    helpPopupLabel()
+);
+optionsMenuContents.push($optionsMenuQuestionMark);
+$(
+    '<label><input  type="checkbox" ' +
+    (showHelpPopupQuestionMark ? 'checked' : '') +
+    ' /> Show question mark</label>'
+)
+    .on('change', function (e) {
+        setShowHelpPopup(e.target.checked);
+        if (!showHelpPopupQuestionMark) {
+            removeHelpPopup();
+        }
+        else {
+            createHelpPopup();
+            $helpPopup.css('display', 'none');
+        }
+    })
+    .appendTo($optionsMenuQuestionMark);
 
 function setSelectedEmote (newEmote) {
     cttvSelectedEmote = newEmote;
@@ -194,37 +266,38 @@ cleanupFunctions.push(function () {
 
 // Global limit
 
-var globalLimitDisplayInterval;
-function createGlobalLimitDisplay () {
-    if ($globalLimitDisplay)
+var globalMessageLimitIndicatorInterval;
+function createGlobalMessageLimitIndicator () {
+    if ($globalMessageLimitIndicator)
         return;
 
-    $globalLimitDisplay = $(
-        '<p class="global-limit-display">Test</p>')
+    $globalMessageLimitIndicator = $(
+        '<p class="global-message-limit-indicator" style="transform: scale(' +
+        (scaleGlobalMessageLimitIndicator / 100) + ');">Test</p>')
         .appendTo($chatBox.parent());
 
     var lastLen = -1;
-    function antiGlobalMessageLoop () {
-        var diff = new Date().getTime() - antiGlobalTimekeeper[0];
-        if (diff > antiGlobalTimeLimit * 1000) {
-            antiGlobalTimekeeper.shift();
-
+    function antiGlobalMessageLimitLoop () {
+        var diff = new Date().getTime() - antiGlobalMessageLimitTimekeeper[0];
+        if (diff > antiGlobalMessageTimeLimit * 1000) {
+            antiGlobalMessageLimitTimekeeper.shift();
         }
-        var gtlen = antiGlobalTimekeeper.length;
+        var gtlen = antiGlobalMessageLimitTimekeeper.length;
         if (gtlen === lastLen)
             return;
         lastLen = gtlen;
 
         var textScaler = scaleNumberRange(
             Math.min(gtlen, 17), 0, 17,
-            antiGlobalDisplaySizeMin, antiGlobalDisplaySizeMax);
+            antiGlobalMessageLimitIndicatorSizeMin,
+            antiGlobalMessageLimitIndicatorSizeMax);
         var colorScaler = scaleNumberRange(
             Math.min(gtlen, 17), 0, 17,
             126, 255);
         var gbInverseScaler = scaleNumberRangeInverse(
             Math.min(gtlen, 17), 0, 17,
             0, 126);
-        $globalLimitDisplay
+        $globalMessageLimitIndicator
             .css('font-size', (textScaler) + 'px')
             .css('color', rgb(colorScaler, gbInverseScaler, gbInverseScaler))
             .css('opacity', (gtlen < 3 ? 0 : 1))
@@ -232,27 +305,37 @@ function createGlobalLimitDisplay () {
 
     }
 
-    globalLimitDisplayInterval = setInterval(antiGlobalMessageLoop, 100);
+    globalMessageLimitIndicatorInterval =
+        setInterval(antiGlobalMessageLimitLoop, 100);
 }
 
-function removeGlobalLimitDisplay () {
-    if (!$globalLimitDisplay)
+function removeGlobalMessageLimitIndicator () {
+    if (!$globalMessageLimitIndicator)
         return;
 
-    clearInterval(globalLimitDisplayInterval);
-    $globalLimitDisplay.remove();
-    $globalLimitDisplay = false;
+    clearInterval(globalMessageLimitIndicatorInterval);
+    $globalMessageLimitIndicator.remove();
+    $globalMessageLimitIndicator = false;
 }
 
-function setShowGlobalLimitDisplay (newValue) {
+function setShowGlobalMessageLimitIndicator (newValue) {
     showGlobalMessageLimitCounter = newValue;
     window.localStorage.setItem(
         'cttvShowGlobalMessageLimit',
-        newValue.toString());
+        newValue.toString()
+    );
+}
+
+function setScaleGlobalMessageLimitIndicator(newValue) {
+    scaleGlobalMessageLimitIndicator = newValue;
+    window.localStorage.setItem(
+        'cttvScaleGlobalMessageLimit',
+        newValue.toString()
+    );
 }
 
 cleanupFunctions.push(function () {
-    removeGlobalLimitDisplay();
+    removeGlobalMessageLimitIndicator();
 });
 
 // Sending too fast
@@ -264,7 +347,8 @@ function createSendingTooFastIndicator () {
         return;
 
     $sendingTooFastIndicator = $(
-        '<p class="sending-too-fast-indicator">X</p>')
+        '<p class="sending-too-fast-indicator" style="transform: scale(' +
+        (scaleSendingTooFastIndicator / 100) + ')">X</p>')
         .appendTo($chatBox.parent());
 
     var lastState = -1;
@@ -281,7 +365,8 @@ function createSendingTooFastIndicator () {
     function sendingTooFastLoop () {
 
         var diff = new Date().getTime() -
-            antiGlobalTimekeeper[antiGlobalTimekeeper.length - 1];
+            antiGlobalMessageLimitTimekeeper[
+                antiGlobalMessageLimitTimekeeper.length - 1];
         if (diff > sendingTooFastCooldown || isNaN(diff)) {
             if (diff > sendingTooFastCooldown + 1000 || isNaN(diff)) {
                 if (sendTooFastIsLastState(3))
@@ -324,6 +409,11 @@ function removeSendingTooFastIndicator () {
 function setShowSendingTooFast (newValue) {
     showSendingTooFastIndicator = newValue;
     window.localStorage.setItem('cttvShowSendTooFast', newValue.toString());
+}
+
+function setScaleSendingTooFast(newValue) {
+    scaleSendingTooFastIndicator = newValue;
+    window.localStorage.setItem('cttvScaleSendTooFast', newValue.toString());
 }
 
 cleanupFunctions.push(function () {
@@ -441,8 +531,9 @@ cleanupFunctions.push(function () {
 var lastHelpPopupScrollPosition = 2;
 var menuSimpleBar;
 
-var kappaImage = '<img class="emoticon" ' +
+var kappaImage = '<img class="chat-line__message--emote" ' +
     'src="https://static-cdn.jtvnw.net/emoticons/v1/25/1.0" />';
+
 function getKbd() {
     var returnStr = '<span class="kbd">' + arguments[0] + '</span>';
     for (var i = 1; i < arguments.length; i++)
@@ -653,7 +744,7 @@ function main () {
     }
 
     if (showGlobalMessageLimitCounter)
-        createGlobalLimitDisplay();
+        createGlobalMessageLimitIndicator();
 
     if (showSendingTooFastIndicator)
         createSendingTooFastIndicator();
@@ -732,7 +823,7 @@ function main () {
             if (currentChatMessage !== '') {
                 lastMessage = currentChatMessage;
                 var tempTime = new Date().getTime();
-                antiGlobalTimekeeper.push(tempTime);
+                antiGlobalMessageLimitTimekeeper.push(tempTime);
             }
         }
         debug('CTTV send');
@@ -966,7 +1057,7 @@ function main () {
                     mMod.disableCleanup = true;
                     repeatSpamIndex++;
                     mMod.text = lastMessage;
-                    if (antiGlobalTimekeeper.length !== 0) {
+                    if (antiGlobalMessageLimitTimekeeper.length !== 0) {
                         mMod.text += ' ' +
                             repeatSpamArr[
                                 repeatSpamIndex % repeatSpamArr.length];
