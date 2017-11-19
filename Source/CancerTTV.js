@@ -753,7 +753,7 @@ function main () {
         createAutoSend();
 
     var cttvShowMenuInterval = setInterval(function () {
-        var chatSettings = $('.chat-settings');
+        var chatSettings = $('.chat-settings__content');
         if (chatSettings.length > 0) {
             $(
                 '<div><div class="border-t  mg-t-2 pd-y-2">' +
@@ -945,7 +945,7 @@ function main () {
             $children = $element.children();
         else
             $children = $ffz.children();
-        
+
         // First we parse all the immediate children of the message div
         $.each($children, function (i, val) {
             var $val = $(val);
@@ -984,16 +984,6 @@ function main () {
         return messagetext;
     }
 
-    var chatOnClickCssTag;
-    var onClickCss = $(
-        '<style scoped type="text/css">' +
-        '.chat-line { cursor: pointer !important; } \n' +
-        '.chat-line__message:hover { ' +
-        'background-color: rgb(126, 126, 126) !important; } \n' +
-        '.chat-line__message > * { pointer-events: none!important; }' +
-        '</style>'
-    );
-
     function addChatOnClick () {
         debug('chat onclick called');
         $chatMessageArea.on('mousedown', function (e) {
@@ -1006,7 +996,7 @@ function main () {
             e.preventDefault();
             chatMessageOnClick($target, e, button);
         });
-        chatOnClickCssTag = onClickCss.appendTo($chatMessageArea);
+        $chatMessageArea.addClass('cttv-chat-select');
     }
 
     function chatMessageOnClick ($this, e, button) {
@@ -1208,7 +1198,7 @@ function main () {
 
     function cleanupCtrlDown () {
         $chatMessageArea.off('mousedown');
-        if (chatOnClickCssTag) chatOnClickCssTag.remove();
+        $chatMessageArea.removeClass('cttv-chat-select');
         showHelpPopup(false);
         ctrlIsHeld = false;
     }

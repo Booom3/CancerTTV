@@ -182,3 +182,13 @@
     background-size: contain;
     cursor: pointer;
 }
+
+.cttv-chat-select .chat-line__message {
+    cursor: pointer !important;
+}
+.cttv-chat-select .chat-line__message:hover {
+    background-color: rgb(126, 126, 126) !important;
+}
+.cttv-chat-select .chat-line__message > * {
+    pointer-events: none!important;
+}
