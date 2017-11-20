@@ -953,7 +953,9 @@ function main () {
                 messagetext += $val.find('img').attr('alt'); return;
             }
             else if ($val.data('a-target') === 'chat-message-text' ||
-                $val.data('a-target') === 'chat-message-mention')
+                $val.data('a-target') === 'chat-message-mention' ||
+                // Below is an FFZ workaround, it changes mentions
+                $val.hasClass('chat-line__message-mention'))
             {
                 if ($val.find('.bttv, .bttv-channel').length !== 0) {
                     var $nodes = $val.children().contents();
