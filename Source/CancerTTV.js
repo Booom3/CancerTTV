@@ -952,11 +952,15 @@ function main () {
             if ($val.data('a-target') === 'emote-name') {
                 messagetext += $val.find('img').attr('alt'); return;
             }
-            else if ($val.data('a-target') === 'chat-message-text' ||
+            else if (
+                $val.data('a-target') === 'chat-message-text' ||
                 $val.data('a-target') === 'chat-message-mention' ||
-                // Below is an FFZ workaround, it changes mentions
-                $val.hasClass('chat-line__message-mention'))
-            {
+                $val.hasClass('chat-line__message--link') ||
+                // Below is an FFZ workaround, it changes mentions.
+                $val.hasClass('chat-line__message-mention') ||
+                // Another FFZ workaround, it changes links
+                $val.data('tooltip-type') === 'link'
+            ) {
                 if ($val.find('.bttv, .bttv-channel').length !== 0) {
                     var $nodes = $val.children().contents();
                     $.each($nodes, function (j, bttvnode) {
@@ -977,6 +981,13 @@ function main () {
                 }
                 return;
             }
+            // Clips embed
+            else if ($val.children('.clips-chat-card').length !== 0) {
+                var a = $val.children('.clips-chat-card').eq(0);
+                messagetext += a.prop('hostname');
+                messagetext += a.prop('pathname');
+                messagetext += ' ';
+            }    
             // FFZ Wraps emotes differently
             else if ($val.hasClass('chat-line__message--emote')) {
                 messagetext += $val.attr('alt');
