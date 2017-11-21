@@ -65,20 +65,20 @@ function helpPopupDiv (addString) {
     return '<div class="help-popup-message-cttv" ' + addString + '>';
 }
 
-function helpPopupLabel(addString) {
-    return '<label class="help-popup-message-cttv" ' + addString + '>';
+function helpPopupOptionsDiv (addString) {
+    return '<div class="help-popup-option-cttv" ' + addString + '>';
 }
-
 var optionsMenuContents = [];
 
 // Stored Pasta options menu
 
 var $optionsMenuStoredPasta = $(
-    helpPopupDiv()
+    helpPopupOptionsDiv()
 );
 optionsMenuContents.push($optionsMenuStoredPasta);
 $(
-    '<label><input  type="checkbox" ' +
+    '<label class="help-popup-option-inner-cttv">' +
+    '<input class="help-popup-option-checkbox-cttv" type="checkbox" ' +
     (enableStoredPastaKeys ? 'checked' : '') +
     '/> Enable stored pasta hotkeys</label>'
 )
@@ -90,14 +90,15 @@ $(
 // Selected Emote options menu
 
 var $optionsMenuSelectedEmote = $(
-    helpPopupDiv(
+    helpPopupOptionsDiv(
         'title="It doesn&#39;t have to be just an emote.&#10;' +
         'Any characters are allowed, including spaces."'
     )
 );
 optionsMenuContents.push($optionsMenuSelectedEmote);
 $(
-    '<label>Stored emote<br><input type="textarea" value="' +
+    '<label class="help-popup-option-inner-cttv">' +
+    'Stored emote<br><input type="textarea" value="' +
     cttvSelectedEmote + '" style="width: 90%;"/></label>'
 )
     .on('keyup', function (e) {
@@ -108,12 +109,14 @@ $(
 // Auto Send options menu
 
 var $optionsMenuAutoSend = $(
-    helpPopupLabel()
+    helpPopupOptionsDiv()
 );
 optionsMenuContents.push($optionsMenuAutoSend);
 $(
-    '<input  type="checkbox" ' + (showAutoSend ? 'checked' : '') +
-    '/> Show auto send checkbox</label></div>'
+    '<label class="help-popup-option-inner-cttv">' +
+    '<input class="help-popup-option-checkbox-cttv" ' +
+    'type="checkbox" ' + (showAutoSend ? 'checked' : '') +
+    '/> Show auto send checkbox</label>'
 )
     .on('change', function (e) {
         setShowAutoSend(e.target.checked);
@@ -127,11 +130,12 @@ $(
 // Sending Too Fast options menu
 
 var $optionsMenuSendingTooFast = $(
-    helpPopupLabel()
+    helpPopupOptionsDiv()
 );
 optionsMenuContents.push($optionsMenuSendingTooFast);
 $(
-    '<label><input  type="checkbox" ' +
+    '<label class="help-popup-option-inner-cttv">' +
+    '<input class="help-popup-option-checkbox-cttv" type="checkbox" ' +
     (showSendingTooFastIndicator ? 'checked' : '') +
     '/> Show sending messages too fast</label>'
 )
@@ -144,8 +148,8 @@ $(
     })
     .appendTo($optionsMenuSendingTooFast);
 
-$(
-    '<div>Set indicator scale</div>'
+var $optionsMenuSendingTooFastSliderTop = $(
+    '<div class="help-popup-option-inner-cttv">Set indicator scale</div>'
 )
     .appendTo($optionsMenuSendingTooFast);
 
@@ -160,16 +164,17 @@ $(
                 .css('transform', 'scale(' + this.value / 100 + ')');
         }
     })
-    .appendTo($optionsMenuSendingTooFast);
+    .appendTo($optionsMenuSendingTooFastSliderTop);
 
 // Global Limit options menu
 
 var $optionsMenuGlobalLimit = $(
-    helpPopupDiv()
+    helpPopupOptionsDiv()
 );
 optionsMenuContents.push($optionsMenuGlobalLimit);
 $(
-    '<label><input  type="checkbox" ' +
+    '<label class="help-popup-option-inner-cttv">' +
+    '<input class="help-popup-option-checkbox-cttv" type="checkbox" ' +
     (showGlobalMessageLimitCounter ? 'checked' : '') +
     '/> Show global message limit</label>'
 )
@@ -182,8 +187,8 @@ $(
     })
     .appendTo($optionsMenuGlobalLimit);
 
-$(
-    '<div>Set indicator scale</div>'
+var $optionsMenuGlobalLimitSliderTop = $(
+    '<div class="help-popup-option-inner-cttv">Set indicator scale</div>'
 )
     .appendTo($optionsMenuGlobalLimit);
 
@@ -198,16 +203,17 @@ $(
                 .css('transform', 'scale(' + this.value / 100 + ')');
         }
     })
-    .appendTo($optionsMenuGlobalLimit);
+    .appendTo($optionsMenuGlobalLimitSliderTop);
 
 // Question Mark options menu
 
 var $optionsMenuQuestionMark = $(
-    helpPopupLabel()
+    helpPopupOptionsDiv()
 );
 optionsMenuContents.push($optionsMenuQuestionMark);
 $(
-    '<label><input  type="checkbox" ' +
+    '<label class="help-popup-option-inner-cttv">' +
+    '<input class="help-popup-option-checkbox-cttv" type="checkbox" ' +
     (showHelpPopupQuestionMark ? 'checked' : '') +
     ' /> Show question mark</label>'
 )
@@ -987,7 +993,7 @@ function main () {
                 messagetext += a.prop('hostname');
                 messagetext += a.prop('pathname');
                 messagetext += ' ';
-            }    
+            }
             // FFZ Wraps emotes differently
             else if ($val.hasClass('chat-line__message--emote')) {
                 messagetext += $val.attr('alt');

@@ -62,6 +62,36 @@
     margin: 0px;
     resize: none;
 }
+
+.help-popup-option-cttv {
+    text-align: center;
+    background-color: rgb(60, 60, 60);
+    box-shadow: 0px 1px 0px rgba(255, 255, 255, 0.15) inset;
+    border-bottom: black solid 2px;
+    color: rgb(211, 211, 211);
+    display: block;
+}
+.help-popup-option-cttv:last-child {
+    border-bottom: none;
+}
+.help-popup-option-cttv:first-child {
+    box-shadow: none;
+}
+.help-popup-option-cttv:nth-child(2n) {
+    background-color: rgb(40, 40, 40);
+}
+.help-popup-option-inner-cttv {
+    font-size: 1.1em;
+    padding: 8px 6px 10px 6px;
+    display: block;
+}
+.help-popup-option-checkbox-cttv {
+    position: relative;
+    float: left;
+    width: 18px;
+    height: 18px;
+}
+
 .kbd {
     padding: 0.1em 0.6em;
     border: 1px solid rgb(204, 204, 204);
