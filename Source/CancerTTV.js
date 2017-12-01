@@ -741,7 +741,7 @@ function main () {
     debug($('.chat-list__lines'));
 
     $chatMessageArea = $('.chat-list__lines');
-    $chatArea = $('.chat__container');
+    $chatArea = $('.chat-room__container');
     $chatBox = $chatArea.find('div textarea');
     $chatSend = $('.chat-buttons-container [data-a-target="chat-send-button"]');
 
@@ -1314,7 +1314,8 @@ function scaleNumber (num, min, max) {
 
 // Returns num between originalMin and originalMax scaled up to between
 // scaledMin and scaledMax
-function scaleNumberRange(num, originalMin, originalMax,
+function scaleNumberRange(
+    num, originalMin, originalMax,
     scaledMin, scaledMax)
 {
     return scaleNumber(num, originalMin, originalMax) *
@@ -1322,7 +1323,8 @@ function scaleNumberRange(num, originalMin, originalMax,
 }
 
 // Same as above but inverted (if num = scaledMax it returns scaledMin)
-function scaleNumberRangeInverse(num, originalMin, originalMax,
+function scaleNumberRangeInverse(
+    num, originalMin, originalMax,
     scaledMin, scaledMax)
 {
     return (1 - scaleNumber(num, originalMin, originalMax)) *
