@@ -2,8 +2,8 @@
 var regExSpaces = / +/g;
 var antiGlobalMessageTimeLimit = 31;
 var antiGlobalMessageLimit = 20;
-var antiGlobalMessageLimitIndicatorSizeMin = 12;
-var antiGlobalMessageLimitIndicatorSizeMax = 72;
+var antiGlobalMessageLimitIndicatorSizeMin = 1;
+var antiGlobalMessageLimitIndicatorSizeMax = 6;
 var repeatSpamArr = [',', '.', '-', '"', '_', ':', ';'];
 var sendingTooFastCooldown = 1000;
 
@@ -158,10 +158,11 @@ $(
     'value="' + scaleSendingTooFastIndicator + '">'
 )
     .on('input', function () {
+        triggerSendingTooFastIndicator();
         setScaleSendingTooFast(this.value);
         if ($sendingTooFastIndicator) {
             $sendingTooFastIndicator
-                .css('transform', 'scale(' + this.value / 100 + ')');
+                .css('transform', 'scale(' + (this.value / 100 * 5) + ')');
         }
     })
     .appendTo($optionsMenuSendingTooFastSliderTop);
@@ -192,15 +193,35 @@ var $optionsMenuGlobalLimitSliderTop = $(
 )
     .appendTo($optionsMenuGlobalLimit);
 
+var tempShowGlobalLimit = false;
+
 $(
     '<input class="option-slider-cttv" type="range" min="10" max="200" ' +
     'value="' + scaleGlobalMessageLimitIndicator + '">'
 )
     .on('input', function () {
+        if (antiGlobalMessageLimitTimekeeper.length < 3 ||
+            tempShowGlobalLimit) {
+            if (tempShowGlobalLimit) {
+                clearTimeout(tempShowGlobalLimit);
+            }
+            tempShowGlobalLimit = setTimeout(function () {
+                tempShowGlobalLimit = false;
+            }, 5000);
+            var newArray = [], time = new Date().getTime() -
+                (antiGlobalMessageTimeLimit * 1000) + 5000;
+            for (var i = 0; i < 10; i++) {
+                newArray.push(time);
+            }
+            antiGlobalMessageLimitTimekeeper = newArray;
+        }
         setScaleGlobalMessageLimitIndicator(this.value);
         if ($globalMessageLimitIndicator) {
             $globalMessageLimitIndicator
-                .css('transform', 'scale(' + this.value / 100 + ')');
+                .css('transform', 'scale(' +
+                (($globalMessageLimitIndicator.data('text-scaler') || 1) *
+                    (this.value / 100)) +
+                ')');
         }
     })
     .appendTo($optionsMenuGlobalLimitSliderTop);
@@ -278,36 +299,38 @@ function createGlobalMessageLimitIndicator () {
         return;
 
     $globalMessageLimitIndicator = $(
-        '<p class="global-message-limit-indicator" style="transform: scale(' +
-        (scaleGlobalMessageLimitIndicator / 100) + ');">Test</p>')
+        '<p class="global-message-limit-indicator");">Test</p>')
         .appendTo($chatBox.parent());
 
-    var lastLen = -1;
+    var lastLength = -1;
     function antiGlobalMessageLimitLoop () {
-        var diff = new Date().getTime() - antiGlobalMessageLimitTimekeeper[0];
-        if (diff > antiGlobalMessageTimeLimit * 1000) {
+        var difference = new Date().getTime() -
+            antiGlobalMessageLimitTimekeeper[0];
+        if (difference > antiGlobalMessageTimeLimit * 1000) {
             antiGlobalMessageLimitTimekeeper.shift();
         }
-        var gtlen = antiGlobalMessageLimitTimekeeper.length;
-        if (gtlen === lastLen)
+        if (antiGlobalMessageLimitTimekeeper.length === lastLength)
             return;
-        lastLen = gtlen;
+        lastLength = antiGlobalMessageLimitTimekeeper.length;
 
         var textScaler = scaleNumberRange(
-            Math.min(gtlen, 17), 0, 17,
+            Math.min(lastLength, 17), 0, 17,
             antiGlobalMessageLimitIndicatorSizeMin,
             antiGlobalMessageLimitIndicatorSizeMax);
         var colorScaler = scaleNumberRange(
-            Math.min(gtlen, 17), 0, 17,
+            Math.min(lastLength, 17), 0, 17,
             126, 255);
         var gbInverseScaler = scaleNumberRangeInverse(
-            Math.min(gtlen, 17), 0, 17,
+            Math.min(lastLength, 17), 0, 17,
             0, 126);
         $globalMessageLimitIndicator
-            .css('font-size', (textScaler) + 'px')
+            .css('transform', 'scale(' +
+            (textScaler * (scaleGlobalMessageLimitIndicator / 100)) +
+            ')')
             .css('color', rgb(colorScaler, gbInverseScaler, gbInverseScaler))
-            .css('opacity', (gtlen < 3 ? 0 : 1))
-            .text(gtlen === antiGlobalMessageLimit ? 'MAX' : gtlen);
+            .css('opacity', (lastLength < 3 ? 0 : 1))
+            .text(lastLength === antiGlobalMessageLimit ? 'MAX' : lastLength)
+            .data('text-scaler', textScaler);
 
     }
 
@@ -356,51 +379,25 @@ function createSendingTooFastIndicator () {
         '<p class="sending-too-fast-indicator" style="transform: scale(' +
         (scaleSendingTooFastIndicator / 100) + ')">X</p>')
         .appendTo($chatBox.parent());
+}
 
-    var lastState = -1;
-    function sendTooFastIsLastState (currentState) {
-        if (currentState === lastState) {
-            return true;
-        }
-        else {
-            lastState = currentState;
-            return false;
-        }
-    }
-
-    function sendingTooFastLoop () {
-
-        var diff = new Date().getTime() -
-            antiGlobalMessageLimitTimekeeper[
-                antiGlobalMessageLimitTimekeeper.length - 1];
-        if (diff > sendingTooFastCooldown || isNaN(diff)) {
-            if (diff > sendingTooFastCooldown + 1000 || isNaN(diff)) {
-                if (sendTooFastIsLastState(3))
-                    return;
-
-                $sendingTooFastIndicator
-                    .removeClass('red green');
-            }
-            else {
-                if (sendTooFastIsLastState(2))
-                    return;
-
-                $sendingTooFastIndicator
-                    .text('O')
-                    .removeClass('red')
-                    .addClass('green');
-            }
-        }
-        else {
-            if (sendTooFastIsLastState(1))
-                return;
-
+var sendingTooFastTimeout;
+function triggerSendingTooFastIndicator() {
+    if ($sendingTooFastIndicator) {
+        clearTimeout(sendingTooFastTimeout);
+        $sendingTooFastIndicator
+            .text('X')
+            .addClass('red');
+        sendingTooFastTimeout = setTimeout(function () {
             $sendingTooFastIndicator
-                .text('X')
-                .addClass('red');
-        }
+                .text('O')
+                .removeClass('red')
+                .addClass('green');
+            sendingTooFastTimeout = setTimeout(function () {
+                $sendingTooFastIndicator.removeClass('red green');
+            }, 1000);
+        }, sendingTooFastCooldown);
     }
-    sendingTooFastInterval = setInterval(sendingTooFastLoop, 100);
 }
 
 function removeSendingTooFastIndicator () {
@@ -587,7 +584,9 @@ function toggleCttvMenu () {
             // ¯\_(ツ)_/¯
 
             for (var i = 0; i < optionsMenuContents.length; i++) {
-                optionsMenuContents[i].insertAfter($optionsDropdown);
+                optionsMenuContents[i]
+                    .clone(true)
+                    .insertAfter($optionsDropdown);
                 optionsDropdownChildren.push(optionsMenuContents[i]);
             }
 
@@ -830,6 +829,7 @@ function main () {
                 lastMessage = currentChatMessage;
                 var tempTime = new Date().getTime();
                 antiGlobalMessageLimitTimekeeper.push(tempTime);
+                triggerSendingTooFastIndicator();
             }
         }
         debug('CTTV send');
