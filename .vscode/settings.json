@@ -9,5 +9,6 @@
 	"terminal.integrated.env.windows": {
 		"BackgroundColors": "VSCodeBackgrounds",
 		"ForegroundColors": "VSCodeForegrounds"
-	}
+	},
+	"discord.enabled": true
 }

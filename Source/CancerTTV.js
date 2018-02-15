@@ -435,7 +435,7 @@ function createHelpPopup () {
     $helpPopup = $(
         '<div class=help-popup-cttv><font size=4 color=black>' +
         '<b>?</b></font></div>')
-        .appendTo($chatArea);
+        .appendTo($chatArea.parent().parent());
 
     $helpPopup.on('click', function (e) {
         e.stopPropagation();
@@ -741,8 +741,8 @@ function main () {
     debug($('.chat-list__lines'));
 
     $chatMessageArea = $('.chat-list__lines');
-    $chatArea = $('.chat-room__container');
-    $chatBox = $chatArea.find('div textarea');
+    $chatArea = $('.chat-input');
+    $chatBox = $chatArea.find('div div textarea');
     $chatSend = $('.chat-buttons-container [data-a-target="chat-send-button"]');
 
     if (showHelpPopupQuestionMark) {
@@ -967,7 +967,9 @@ function main () {
                 // Another FFZ workaround, it changes links
                 $val.data('tooltip-type') === 'link'
             ) {
-                if ($val.find('.bttv, .bttv-channel').length !== 0) {
+                if ($val.find('.bttv, .bttv-channel, .bttv-emote, .bttv-emoji')
+                    .length !== 0)
+                {
                     var $nodes = $val.children().contents();
                     $.each($nodes, function (j, bttvnode) {
                         if (bttvnode.nodeType === 3) {
