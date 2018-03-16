@@ -19,7 +19,7 @@ var cleanupFunctionsOneTime = [];
 var cleanupFunctions = [];
 
 // Page anchors
-var $chatSend, $chatMessageArea, $chatArea, $chatBox;
+var $chatSend, $chatMessageArea, $chatArea, $chatBox, $rightColumn;
 
 // CTTV Elements
 var $helpPopup, $globalMessageLimitIndicator, $menuAreaTop, $storedPastaTop;
@@ -432,7 +432,7 @@ function createHelpPopup () {
     $helpPopup = $(
         '<div class=help-popup-cttv><font size=4 color=black>' +
         '<b>?</b></font></div>')
-        .appendTo($chatArea.parent().parent());
+        .appendTo($rightColumn);
 
     $helpPopup.on('click', function (e) {
         e.stopPropagation();
@@ -584,10 +584,10 @@ function toggleCttvMenu () {
             // ¯\_(ツ)_/¯
 
             for (var i = 0; i < optionsMenuContents.length; i++) {
-                optionsMenuContents[i]
-                    .clone(true)
-                    .insertAfter($optionsDropdown);
-                optionsDropdownChildren.push(optionsMenuContents[i]);
+                var optionsMenuClone = optionsMenuContents[i]
+                    .clone(true);
+                optionsMenuClone.insertAfter($optionsDropdown);
+                optionsDropdownChildren.push(optionsMenuClone);
             }
 
             optionsDropdownShown = true;
@@ -739,6 +739,7 @@ function main () {
     debug($);
     debug($('.chat-list__lines'));
 
+    $rightColumn = $('.right-column');
     $chatMessageArea = $('.chat-list__lines');
     $chatArea = $('.chat-input');
     $chatBox = $chatArea.find('div div textarea');
