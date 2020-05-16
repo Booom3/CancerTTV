@@ -737,10 +737,10 @@ function main () {
 
     debug('CTTV Main called');
     debug($);
-    debug($('.chat-list__lines'));
+    debug($('.chat-scrollable-area__message-container'));
 
     $rightColumn = $('.right-column');
-    $chatMessageArea = $('.chat-list__lines');
+    $chatMessageArea = $('.chat-scrollable-area__message-container');
     $chatArea = $('.chat-input');
     $chatBox = $chatArea.find('div div textarea');
     $chatSend = $('.chat-buttons-container [data-a-target="chat-send-button"]');
