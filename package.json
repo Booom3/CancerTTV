@@ -1,6 +1,6 @@
 {
   "name": "cancerttv",
-  "version": "1.5.5",
+  "version": "1.5.6",
   "description": "Makes Twitch just a little bit worse for everyone else.",
   "main": "Injection.js",
   "scripts": {
@@ -22,7 +22,7 @@
   "homepage": "https://github.com/Booom3/CancerTTV#readme",
   "devDependencies": {
     "eslint": "^4.11.0",
-    "gulp": "^3.9.1",
+    "gulp": "3.9.1",
     "gulp-bump": "^1.0.0",
     "gulp-zip": "^3.2.0",
     "semver": "^5.1.0"
