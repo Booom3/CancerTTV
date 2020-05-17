@@ -1,6 +1,6 @@
 var intervalLoadChannel;
 function intervalLoadChannelFunction() {
-    if ($('.chat-list__lines').length > 0) {
+    if ($('.chat-scrollable-area__message-container').length > 0) {
         console.log('CTTV enabled');
         window.dispatchEvent(new CustomEvent('cancerttv-start'));
         clearInterval(intervalLoadChannel);
