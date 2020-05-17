@@ -2,7 +2,7 @@
 	"manifest_version": 2,
 	"name": "CancerTTV",
 	"short_name": "CTTV",
-	"version": "1.5.5",
+	"version": "1.5.6",
 	"description": "Makes Twitch just a little bit worse for everyone else.",
 	"icons": {
 		"64": "Icon 64.png",

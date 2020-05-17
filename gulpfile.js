@@ -20,27 +20,23 @@ gulp.task('styles', function () {
         .pipe(gulp.dest(ffExtLoc + '/Source'));
 });
 
-gulp.task('compresszipff', ['scripts', 'styles'], function () {
+gulp.task('compresszipff', gulp.series('scripts', 'styles', function () {
     return gulp.src(ffExtLoc + '/Source/*')
         .pipe(zip('CancerTTV Firefox.xpi'))
         .pipe(gulp.dest('Extensions/Firefox Extension'));
-});
+}));
 
-gulp.task('compresszipchrome', ['scripts', 'styles'], function () {
+gulp.task('compresszipchrome', gulp.series('scripts', 'styles', function () {
     return gulp.src(chromeExtLoc + '/Source/*')
         .pipe(zip('CancerTTV Chrome.zip'))
         .pipe(gulp.dest(chromeExtLoc + ''));
-});
+}));
 
 var fs = require('fs');
 var getPackageJson = function (arg) {
     return JSON.parse(fs.readFileSync(arg, 'utf8'));
 };
 
-gulp.task(
-    'bumpversion',
-    ['bumpversionpackage', 'bumpversionchrome', 'bumpversionff']
-);
 
 var version = 'minor';
 if (process.argv.indexOf('--patch') > -1)
@@ -70,8 +66,13 @@ gulp.task('bumpversionff', function () {
         .pipe(gulp.dest(ffExtLoc + '/Source'));
 });
 
+gulp.task(
+    'bumpversion',
+    gulp.series('bumpversionpackage', 'bumpversionchrome', 'bumpversionff')
+);
+
 gulp.task('watch', function () {
     gulp.watch('Source/*', ['styles', 'scripts']);
 });
 
-gulp.task('default', ['scripts', 'compresszipff', 'compresszipchrome']);
+gulp.task('default',  gulp.series('scripts', 'compresszipff', 'compresszipchrome'));
